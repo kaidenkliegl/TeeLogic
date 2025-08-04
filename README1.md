@@ -1,4 +1,3 @@
-<<<<<<< HEAD
 # Flask React Project
 
 This is the starter for the Flask React project.
@@ -130,7 +129,3 @@ main, always keeping it up to date.
 
 [Render.com]: https://render.com/
 [Dashboard]: https://dashboard.render.com/
-=======
-# TeeLogic
-TeeLogic is a cloud-based tee time management system built specifically for public golf courses, daily-fee operations, and course operators who want simple, fast, and reliable scheduling tools without the bloated features or hidden fees.
->>>>>>> c973440d0647c991e030e3b70ac08a7b86648fe8
