@@ -15,6 +15,7 @@ class ReservationGolfer(db.Model):
 
     reservation = db.relationship('Reservation', back_populates='reservation_golfers')
     golfer = db.relationship('Golfer')
+    
 
     def to_dict(self):
         return {

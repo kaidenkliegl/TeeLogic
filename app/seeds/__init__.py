@@ -1,5 +1,7 @@
 from flask.cli import AppGroup
 from .users import seed_users, undo_users
+from .courses import seed_courses, undo_courses
+from .pricing import seed_pricing_rules, undo_pricing_rules
 
 from app.models.db import db, environment, SCHEMA
 
@@ -17,7 +19,11 @@ def seed():
         # the schema name (see comment in users.py undo_users function).
         # Make sure to add all your other model's undo functions below
         undo_users()
+        undo_courses()
+        undo_pricing_rules()
     seed_users()
+    seed_courses()
+    seed_pricing_rules()
     # Add other seed functions here
 
 
@@ -25,4 +31,5 @@ def seed():
 @seed_commands.command('undo')
 def undo():
     undo_users()
+    
     # Add other undo functions here

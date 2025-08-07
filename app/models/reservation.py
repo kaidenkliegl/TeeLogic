@@ -20,6 +20,8 @@ class Reservation(db.Model):
     )
 
     reservation_golfers = db.relationship('ReservationGolfer', back_populates='reservation', cascade='all, delete-orphan')
+    notes = db.relationship('Note', back_populates='reservation')
+
 
     def to_dict(self):
         return {

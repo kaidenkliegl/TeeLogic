@@ -20,6 +20,7 @@ class User(db.Model, UserMixin):
 
     course = db.relationship('Course', back_populates='users')
     notes = db.relationship("Note", back_populates="author", cascade="all, delete-orphan")
+    created_pricing_rules = db.relationship('PricingRule', back_populates='creator')
 
 
     
