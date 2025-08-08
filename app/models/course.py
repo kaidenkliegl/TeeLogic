@@ -21,6 +21,8 @@ class Course(db.Model):
     pricing_rules = db.relationship("PricingRule", back_populates="course", cascade="all, delete-orphan")
     users = db.relationship("User", back_populates="course", cascade="all, delete-orphan")
     golfers = db.relationship("Golfer", back_populates="course", cascade="all, delete-orphan")
+    tee_time_settings = db.relationship('TeeTimeSetting', back_populates='course')
+
 
     def to_dict(self):
         return {

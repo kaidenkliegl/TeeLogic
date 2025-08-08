@@ -1,8 +1,8 @@
-"""Initial migration
+"""Initial migration with end_time
 
-Revision ID: 1a54a8f19eb3
+Revision ID: ede758ffa9e1
 Revises: 
-Create Date: 2025-08-06 23:07:11.303692
+Create Date: 2025-08-08 12:55:12.162736
 
 """
 from alembic import op
@@ -14,7 +14,7 @@ SCHEMA = os.getenv("SCHEMA")
 
 
 # revision identifiers, used by Alembic.
-revision = '1a54a8f19eb3'
+revision = 'ede758ffa9e1'
 down_revision = None
 branch_labels = None
 depends_on = None
@@ -42,6 +42,16 @@ def upgrade():
     sa.Column('member_status', sa.String(length=20), nullable=False),
     sa.Column('created_at', sa.DateTime(), nullable=False),
     sa.Column('course_id', sa.Integer(), nullable=False),
+    sa.ForeignKeyConstraint(['course_id'], ['courses.id'], ),
+    sa.PrimaryKeyConstraint('id')
+    )
+    op.create_table('tee_time_settings',
+    sa.Column('id', sa.Integer(), nullable=False),
+    sa.Column('start_time', sa.Time(), nullable=False),
+    sa.Column('interval_minutes', sa.Integer(), nullable=False),
+    sa.Column('end_time', sa.Time(), nullable=False),
+    sa.Column('course_id', sa.Integer(), nullable=False),
+    sa.Column('created_at', sa.DateTime(), nullable=False),
     sa.ForeignKeyConstraint(['course_id'], ['courses.id'], ),
     sa.PrimaryKeyConstraint('id')
     )
@@ -115,8 +125,9 @@ def upgrade():
     sa.ForeignKeyConstraint(['reservation_id'], ['reservations.id'], ),
     sa.PrimaryKeyConstraint('id')
     )
+    # ### end Alembic commands ###
 
-if environment == "production" and SCHEMA:
+    if environment == "production" and SCHEMA:
     tables = [
         'courses',
         'golfers',
@@ -125,13 +136,11 @@ if environment == "production" and SCHEMA:
         'pricing_rules',
         'reservations',
         'notes',
-        'reservation_golfers'
+        'reservation_golfers',
+        'tee_time_settings'
     ]
     for table in tables:
         op.execute(f'ALTER TABLE {table} SET SCHEMA {SCHEMA};')
-
-    
-    # ### end Alembic commands ###
 
 
 def downgrade():
@@ -142,6 +151,7 @@ def downgrade():
     op.drop_table('pricing_rules')
     op.drop_table('users')
     op.drop_table('tee_times')
+    op.drop_table('tee_time_settings')
     op.drop_table('golfers')
     op.drop_table('courses')
     # ### end Alembic commands ###
