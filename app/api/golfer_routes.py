@@ -35,7 +35,7 @@ def create_golfer():
             first_name=form.first_name.data,
             last_name=form.last_name.data,
             email=form.email.data,
-            phone=form.phone.data,
+            phone_number=form.phone.data,
             course_id=form.course_id.data
         )
         db.session.add(new_golfer)

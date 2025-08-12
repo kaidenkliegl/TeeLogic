@@ -4,8 +4,9 @@ from app.models import db, TeeTimeSetting, TeeTime
 from datetime import datetime
 from sqlalchemy import func
 from app.utils.tee_time_helper import tee_time_helper 
+from app.forms import TeeTimeForm
 
-tee_time_routes = Blueprint("tee_time_routes", __name__)
+tee_time_routes = Blueprint("tee_time", __name__)
 
 @tee_time_routes.route("/", methods=['GET'])  
 @login_required
@@ -33,7 +34,7 @@ def get_tee_times():
         return jsonify({"error": "No tee time settings found for this course"}), 404
 
     # Generate all potential tee times
-    potential_tee_times = tee_time_generator(setting, date)
+    potential_tee_times = tee_time_helper(setting, date)
 
     # Only create tee times that don't already exist
     new_tee_times = []
@@ -61,3 +62,60 @@ def get_tee_times():
     ).all()
 
     return jsonify([t.to_dict() for t in all_tee_times]), 200
+
+
+#create a tee time
+@tee_time_routes.route("/", methods=["POST"])
+@login_required
+def create_tee_time():
+    form = TeeTimeForm()
+    form['csrf_token'].data = request.cookies.get('csrf_token')
+
+    if form.validate_on_submit():
+        new_tee_time = TeeTime(
+            date=form.date.data,
+            time=form.time.data,
+            group_size=form.group_size.data,
+            course_id=form.course_id.data,
+        )
+
+        db.session.add(new_tee_time)
+        db.session.commit()
+
+        return new_tee_time.to_dict()
+    
+    return {"errors": form.errors}, 400
+        
+# Edit a tee time
+@tee_time_routes.route("/edit/<int:tee_time_id>", methods=["PUT"])
+@login_required
+def edit_tee_time(tee_time_id):
+    form = TeeTimeForm()
+    form['csrf_token'].data = request.cookies.get('csrf_token')
+
+    if form.validate_on_submit():
+        tee_time = TeeTime.query.get(tee_time_id)
+        tee_time.date=form.date.data
+        tee_time=form.time.data
+        tee_time.group_size=form.group_size.data
+        tee_time.course_id=form.course_id.data
+        tee_time.status = form.status.data
+        
+        db.session.commit()
+
+        return tee_time.to_dict(), 201
+    
+    return {"errors": form.errors}, 400
+        
+    #Delete a tee time
+@tee_time_routes.route("/edit/<int:tee_time_id>", methods=["DELETE"])
+@login_required
+def delete_tee_time(tee_time_id):
+    tee_time = TeeTime.query.get(tee_time_id)
+    deleted_time = tee_time.to_dict()
+    db.session.delete(tee_time)
+    db.session.commit()
+
+    return {"message": "Tee time deleted successfully", "tee_time": deleted_time}, 200
+    
+    

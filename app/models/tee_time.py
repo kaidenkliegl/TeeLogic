@@ -14,6 +14,7 @@ class TeeTime(db.Model):
     max_players = db.Column(db.Integer, nullable=False, default=4)
     available_spots = db.Column(db.Integer, nullable=False, default=4)
 
+
     # New status field with 4 possible values
     status = db.Column(
         db.Enum('available', 'blocked', 'split', 'event', name='tee_time_status'),
@@ -26,6 +27,7 @@ class TeeTime(db.Model):
     ##relationships
     reservations = db.relationship("Reservation", back_populates="tee_time", cascade="all, delete-orphan")
     course = db.relationship("Course", back_populates="tee_times")
+    notes = db.relationship('Note', back_populates='tee_time')
 
 
     def to_dict(self):

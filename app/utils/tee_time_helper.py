@@ -1,11 +1,11 @@
 from datetime import datetime, timedelta
 
-def tee_time_generator(settings, date):
+def tee_time_helper(settings, date):
     tee_times = []
 
     # Combine the given date with the start and end times from settings
-    start_datetime = datetime.combine(date, settings.start_time.time())
-    end_datetime = datetime.combine(date, settings.end_time.time())
+    start_datetime = datetime.combine(date, settings.start_time)
+    end_datetime = datetime.combine(date, settings.end_time)
 
     # Calculate total available minutes for tee times
     total_minutes = int((end_datetime - start_datetime).total_seconds() // 60)

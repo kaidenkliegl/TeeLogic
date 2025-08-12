@@ -4,7 +4,7 @@ from app.models import db, TeeTimeSetting
 from app.forms import TeeTimeSettingForm
 
 
-tee_time_settings_routes = Blueprint('tee_time_settings_routes', __name__, url_prefix='/settings')
+tee_time_settings_routes = Blueprint('tee_time_settings', __name__, url_prefix='/settings')
 
 @tee_time_settings_routes.route('/', methods=['POST'])
 @login_required
@@ -33,3 +33,36 @@ def get_setting(course_id):
     if not setting:
         return jsonify({"error": "No setting found"}), 404
     return setting.to_dict(), 200
+
+
+@tee_time_settings_routes.route('/<int:setting_id>', methods=['PUT'])
+@login_required
+def update_setting():
+    form = TeeTimeSettingForm(setting_id)
+    form['csrf_token'].data = request.cookies.get('csrf_token')
+
+    if form.validate_on_submit():
+        settings = TeeTimeSetting.query.get(setting_id)
+
+        setting.start_time = form.start_time.data
+        setting.interval_minutes = form.interval_minutes.data
+        setting.max_tee_times = form.max_tee_times.data
+        setting.course_id = form.course_id.data
+
+        db.session.commit()
+        return setting.to_dict(), 201
+
+    return jsonify({"errors": form.errors}), 400
+
+# Not sure if I really want to delete settings but I will keep it there just in case 
+@tee_time_settings_routes.route('/<int:setting_id>', methods=['DELETE'])
+@login_required
+def delete_setting(setting_id):
+    settings = TeeTimeSetting.query.get(setting_id)
+
+    if not settings:
+        return jsonify({"error: Settings does note exist."})
+
+    db.session.delete(setting)
+    db.session.commit()
+    return jsonify({"message": "Tee time setting deleted"}), 200
