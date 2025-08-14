@@ -130,7 +130,7 @@ def upgrade():
     )
     # ### end Alembic commands ###
     if environment == "production" and SCHEMA:
-        tables = ['users', 'golfers', 'tee_times', 'reservations', 'pricing_rules', "reservation_golfers", 'notes']
+        tables = ['users', 'golfers', 'tee_times', 'reservations', 'pricing_rules', "reservation_golfers", 'notes', 'tee_time_settings', "courses"]
         for table in tables:
             op.execute(f'ALTER TABLE {table} SET SCHEMA {SCHEMA};')
 
