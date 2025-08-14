@@ -1,20 +1,21 @@
-"""Create tables
+"""added models
 
-Revision ID: eff6a025824a
-Revises: ffdc0a98111c
-Create Date: 2025-08-05 18:26:12.729743
+Revision ID: 6ab0ad471b87
+Revises: 
+Create Date: 2025-08-11 20:01:49.537457
 
 """
 from alembic import op
 import sqlalchemy as sa
-
 import os
+
 environment = os.getenv("FLASK_ENV")
-SCHEMA = os.environ.get("SCHEMA")
+SCHEMA = os.getenv("SCHEMA")
+
 
 # revision identifiers, used by Alembic.
-revision = 'eff6a025824a'
-down_revision = 'ffdc0a98111c'
+revision = '6ab0ad471b87'
+down_revision = None
 branch_labels = None
 depends_on = None
 
@@ -35,12 +36,22 @@ def upgrade():
     )
     op.create_table('golfers',
     sa.Column('id', sa.Integer(), nullable=False),
-    sa.Column('fullname', sa.String(length=100), nullable=False),
+    sa.Column('first_name', sa.String(length=100), nullable=False),
     sa.Column('phone_number', sa.String(length=20), nullable=True),
     sa.Column('email', sa.String(length=255), nullable=True),
     sa.Column('member_status', sa.String(length=20), nullable=False),
     sa.Column('created_at', sa.DateTime(), nullable=False),
     sa.Column('course_id', sa.Integer(), nullable=False),
+    sa.ForeignKeyConstraint(['course_id'], ['courses.id'], ),
+    sa.PrimaryKeyConstraint('id')
+    )
+    op.create_table('tee_time_settings',
+    sa.Column('id', sa.Integer(), nullable=False),
+    sa.Column('start_time', sa.Time(), nullable=False),
+    sa.Column('interval_minutes', sa.Integer(), nullable=False),
+    sa.Column('end_time', sa.Time(), nullable=False),
+    sa.Column('course_id', sa.Integer(), nullable=False),
+    sa.Column('created_at', sa.DateTime(), nullable=False),
     sa.ForeignKeyConstraint(['course_id'], ['courses.id'], ),
     sa.PrimaryKeyConstraint('id')
     )
@@ -56,6 +67,29 @@ def upgrade():
     sa.Column('event_name', sa.String(length=255), nullable=True),
     sa.Column('created_at', sa.DateTime(), nullable=False),
     sa.ForeignKeyConstraint(['course_id'], ['courses.id'], ),
+    sa.PrimaryKeyConstraint('id')
+    )
+    op.create_table('users',
+    sa.Column('id', sa.Integer(), nullable=False),
+    sa.Column('username', sa.String(length=40), nullable=False),
+    sa.Column('email', sa.String(length=255), nullable=False),
+    sa.Column('role', sa.String(length=20), nullable=False),
+    sa.Column('hashed_password', sa.String(length=255), nullable=False),
+    sa.Column('created_at', sa.DateTime(), nullable=False),
+    sa.Column('course_id', sa.Integer(), nullable=False),
+    sa.ForeignKeyConstraint(['course_id'], ['courses.id'], ),
+    sa.PrimaryKeyConstraint('id'),
+    sa.UniqueConstraint('email'),
+    sa.UniqueConstraint('username')
+    )
+    op.create_table('notes',
+    sa.Column('id', sa.Integer(), nullable=False),
+    sa.Column('content', sa.String(length=300), nullable=True),
+    sa.Column('created_at', sa.DateTime(), nullable=False),
+    sa.Column('author_id', sa.Integer(), nullable=False),
+    sa.Column('tee_time_id', sa.Integer(), nullable=False),
+    sa.ForeignKeyConstraint(['author_id'], ['users.id'], ),
+    sa.ForeignKeyConstraint(['tee_time_id'], ['tee_times.id'], ),
     sa.PrimaryKeyConstraint('id')
     )
     op.create_table('pricing_rules',
@@ -77,17 +111,8 @@ def upgrade():
     sa.Column('tee_time_id', sa.Integer(), nullable=False),
     sa.Column('total_price', sa.Numeric(precision=10, scale=2), nullable=False),
     sa.Column('created_at', sa.DateTime(), nullable=False),
+    sa.Column('status', sa.String(length=20), nullable=False),
     sa.ForeignKeyConstraint(['tee_time_id'], ['tee_times.id'], ),
-    sa.PrimaryKeyConstraint('id')
-    )
-    op.create_table('notes',
-    sa.Column('id', sa.Integer(), nullable=False),
-    sa.Column('content', sa.String(length=300), nullable=True),
-    sa.Column('created_at', sa.DateTime(), nullable=False),
-    sa.Column('author_id', sa.Integer(), nullable=False),
-    sa.Column('reservation_id', sa.Integer(), nullable=False),
-    sa.ForeignKeyConstraint(['author_id'], ['users.id'], ),
-    sa.ForeignKeyConstraint(['reservation_id'], ['reservations.id'], ),
     sa.PrimaryKeyConstraint('id')
     )
     op.create_table('reservation_golfers',
@@ -101,28 +126,22 @@ def upgrade():
     sa.ForeignKeyConstraint(['reservation_id'], ['reservations.id'], ),
     sa.PrimaryKeyConstraint('id')
     )
-    with op.batch_alter_table('users', schema=None) as batch_op:
-        batch_op.add_column(sa.Column('role', sa.String(length=20), nullable=False))
-        batch_op.add_column(sa.Column('created_at', sa.DateTime(), nullable=False))
-        batch_op.add_column(sa.Column('course_id', sa.Integer(), nullable=False))
-        batch_op.create_foreign_key(None, 'courses', ['course_id'], ['id'])
-
     # ### end Alembic commands ###
 
+    if environment == "production" and SCHEMA:
+        tables = [  'users', 'courses', 'tee_times', 'reservations', 'notes', 'pricing_rules', 'settings']
+        for table in tables:
+            op.execute(f'ALTER TABLE {SCHEMA}.{table} SET SCHEMA {SCHEMA};')
 
 def downgrade():
     # ### commands auto generated by Alembic - please adjust! ###
-    with op.batch_alter_table('users', schema=None) as batch_op:
-        batch_op.drop_constraint(None, type_='foreignkey')
-        batch_op.drop_column('course_id')
-        batch_op.drop_column('created_at')
-        batch_op.drop_column('role')
-
     op.drop_table('reservation_golfers')
-    op.drop_table('notes')
     op.drop_table('reservations')
     op.drop_table('pricing_rules')
+    op.drop_table('notes')
+    op.drop_table('users')
     op.drop_table('tee_times')
+    op.drop_table('tee_time_settings')
     op.drop_table('golfers')
     op.drop_table('courses')
     # ### end Alembic commands ###

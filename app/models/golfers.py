@@ -8,7 +8,7 @@ class Golfer(db.Model):
         __table_args__ = {'schema': SCHEMA}
 
     id = db.Column(db.Integer, primary_key=True)
-    fullname = db.Column(db.String(100), nullable=False)
+    first_name = db.Column(db.String(100), nullable=False)
     phone_number = db.Column(db.String(20), nullable=True)
     email = db.Column(db.String(255), nullable=True)  # Optional for guests
     member_status = db.Column(db.String(20), nullable=False, default="guest")  # "guest", "member", "league", etc.
@@ -30,7 +30,7 @@ class Golfer(db.Model):
     def to_dict(self):
         return {
             'id': self.id,
-            'fullname': self.fullname,
+            'first_name': self.fullname,
             'phone_number': self.phone_number,
             'email': self.email,
             'member_status': self.member_status,

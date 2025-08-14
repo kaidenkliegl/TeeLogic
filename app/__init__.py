@@ -7,8 +7,15 @@ from flask_login import LoginManager
 from .models import db, User
 from .api.user_routes import user_routes
 from .api.auth_routes import auth_routes
+from .api.golfer_routes import golfer_routes
+from .api.pricing_routes import pricing_rules_routes
+from .api.reservation_routes import reservation_routes
+from .api.setting_routes import tee_time_settings_routes
+from .api.tee_time_routes import tee_time_routes
 from .seeds import seed_commands
 from .config import Config
+
+
 
 app = Flask(__name__, static_folder='../react-vite/dist', static_url_path='/')
 
@@ -28,6 +35,11 @@ app.cli.add_command(seed_commands)
 app.config.from_object(Config)
 app.register_blueprint(user_routes, url_prefix='/api/users')
 app.register_blueprint(auth_routes, url_prefix='/api/auth')
+app.register_blueprint(golfer_routes, url_prefix='/api/golfers')
+app.register_blueprint(reservation_routes, url_prefix='/api/reservation')
+app.register_blueprint(tee_time_routes, url_prefix='/api/tee_time')
+app.register_blueprint(pricing_rules_routes, url_prefix='/api/pricing')
+app.register_blueprint(tee_time_settings_routes, url_prefix='/api/settings')
 db.init_app(app)
 Migrate(app, db)
 

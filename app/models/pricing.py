@@ -23,7 +23,7 @@ class PricingRule(db.Model):
 
     ## Relationships 
     course = db.relationship("Course", back_populates="pricing_rules")
-    creator = db.relationship("User", back_populates="created_pricing_rules", cascade="all, delete-orphan")
+    creator = db.relationship("User", back_populates="created_pricing_rules")
 
     def to_dict(self):
         return {

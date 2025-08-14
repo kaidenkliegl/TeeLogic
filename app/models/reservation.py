@@ -10,6 +10,8 @@ class Reservation(db.Model):
     tee_time_id = db.Column(db.Integer, db.ForeignKey(add_prefix_for_prod('tee_times.id')), nullable=False)
     total_price = db.Column(db.Numeric(10, 2), nullable=False)
     created_at = db.Column(db.DateTime, default=datetime.utcnow, nullable=False)
+    status = db.Column(db.String(20), nullable=False )
+
 
     tee_time = db.relationship('TeeTime', back_populates='reservations')
 
@@ -20,6 +22,7 @@ class Reservation(db.Model):
     )
 
     reservation_golfers = db.relationship('ReservationGolfer', back_populates='reservation', cascade='all, delete-orphan')
+
 
     def to_dict(self):
         return {
