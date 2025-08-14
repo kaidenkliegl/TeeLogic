@@ -1,6 +1,6 @@
 from flask import Blueprint, request, jsonify
 from flask_login import login_required
-from app.models import db, TeeTimeSetting, TeeTime
+from app.models import db, TeeTimeSetting, TeeTime, Reservation, ReservationGolfer
 from datetime import datetime
 from sqlalchemy import func
 from app.utils.tee_time_helper import tee_time_helper 
@@ -43,7 +43,6 @@ def get_tee_times():
             tee_time = TeeTime(
                 start_time=data['start_time'],
                 course_id=data['course_id'],
-                interval=data['interval'],
                 max_players=data['max_players'],
                 available_spots=data['available_spots'],
                 status=data['status']
@@ -63,6 +62,12 @@ def get_tee_times():
 
     return jsonify([t.to_dict() for t in all_tee_times]), 200
 
+@tee_time_routes.route("/<int:tee_time_id>/reservations", methods=["GET"])
+@login_required
+def get_tee_time_reservations(tee_time_id):
+    reservations = Reservation.query.filter_by(tee_time_id=tee_time_id).order_by(Reservation.id.asc()).all()
+    return jsonify([r.to_dict() for r in reservations]), 200
+
 
 #create a tee time
 @tee_time_routes.route("/", methods=["POST"])
@@ -71,12 +76,16 @@ def create_tee_time():
     form = TeeTimeForm()
     form['csrf_token'].data = request.cookies.get('csrf_token')
 
+   
     if form.validate_on_submit():
         new_tee_time = TeeTime(
-            date=form.date.data,
-            time=form.time.data,
-            group_size=form.group_size.data,
+            start_time=form.start_time.data,
             course_id=form.course_id.data,
+            holes=form.holes.data or 18,
+            max_players=form.max_players.data or 4,
+            available_spots=form.available_spots.data or 4,
+            status=form.status.data,
+            event_name=form.event_name.data
         )
 
         db.session.add(new_tee_time)
@@ -92,26 +101,34 @@ def create_tee_time():
 def edit_tee_time(tee_time_id):
     form = TeeTimeForm()
     form['csrf_token'].data = request.cookies.get('csrf_token')
-
+    tee_time = TeeTime.query.get(tee_time_id)
+    tee_time = TeeTime.query.get(tee_time_id)
+    if not tee_time:
+        return jsonify({"error": "Tee time does not exist."}), 404
     if form.validate_on_submit():
-        tee_time = TeeTime.query.get(tee_time_id)
-        tee_time.date=form.date.data
-        tee_time=form.time.data
-        tee_time.group_size=form.group_size.data
-        tee_time.course_id=form.course_id.data
+        
+        tee_time.start_time = form.start_time.data
+        tee_time.course_id = form.course_id.data
+        tee_time.holes = form.holes.data or 18
+        tee_time.max_players = form.max_players.data or 4
+        tee_time.available_spots = form.available_spots.data or 4
         tee_time.status = form.status.data
+        tee_time.event_name = form.event_name.data
         
         db.session.commit()
 
         return tee_time.to_dict(), 201
     
     return {"errors": form.errors}, 400
+
         
     #Delete a tee time
-@tee_time_routes.route("/edit/<int:tee_time_id>", methods=["DELETE"])
+@tee_time_routes.route("/delete/<int:tee_time_id>", methods=["DELETE"])
 @login_required
 def delete_tee_time(tee_time_id):
     tee_time = TeeTime.query.get(tee_time_id)
+    if not tee_time:
+        return jsonify({"error": "Tee time does not exist."}), 404
     deleted_time = tee_time.to_dict()
     db.session.delete(tee_time)
     db.session.commit()

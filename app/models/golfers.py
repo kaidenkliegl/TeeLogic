@@ -8,10 +8,10 @@ class Golfer(db.Model):
         __table_args__ = {'schema': SCHEMA}
 
     id = db.Column(db.Integer, primary_key=True)
-    first_name = db.Column(db.String(100), nullable=False)
+    fullname = db.Column(db.String(100), nullable=False)
     phone_number = db.Column(db.String(20), nullable=True)
     email = db.Column(db.String(255), nullable=True)  # Optional for guests
-    member_status = db.Column(db.String(20), nullable=False, default="guest")  # "guest", "member", "league", etc.
+    member_status = db.Column(db.String(20), nullable=False, default="guest")  
     created_at = db.Column(db.DateTime, nullable=False, default=datetime.utcnow)
 
     # Foreign key to course
@@ -23,18 +23,18 @@ class Golfer(db.Model):
 
     reservations = db.relationship(
         'Reservation',
-        secondary=add_prefix_for_prod('reservation_golfers'),
-        back_populates='golfers'
+        back_populates='golfer',
+        cascade='all, delete-orphan'
     )
 
     def to_dict(self):
         return {
             'id': self.id,
-            'first_name': self.fullname,
+            'fullname': self.fullname,
             'phone_number': self.phone_number,
             'email': self.email,
             'member_status': self.member_status,
-            'created_at': self.created_at,
             'created_at': self.created_at.isoformat()
-
         }
+
+

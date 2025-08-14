@@ -1,7 +1,8 @@
 from flask import Blueprint, request, jsonify
-from flask_login import login_required
+from flask_login import login_required, current_user
 from app.models import db, Golfer
 from app.forms import GolferForm
+
 
 
 golfer_routes = Blueprint('golfers', __name__)
@@ -24,19 +25,14 @@ def create_golfer():
     form = GolferForm()
     form['csrf_token'].data = request.cookies.get('csrf_token')
 
-    form.first_name.data = request.json.get('first_name')
-    form.last_name.data = request.json.get('last_name')
-    form.email.data = request.json.get('email')
-    form.phone.data = request.json.get('phone')
-    form.course_id.data = request.json.get('course_id')
-
     if form.validate():
         new_golfer = Golfer(
-            first_name=form.first_name.data,
-            last_name=form.last_name.data,
+            fullname=form.fullname.data,
             email=form.email.data,
+            member_status=form.member_status.data,
             phone_number=form.phone.data,
-            course_id=form.course_id.data
+            course_id=current_user.course_id
+            
         )
         db.session.add(new_golfer)
         db.session.commit()
@@ -51,22 +47,18 @@ def update_golfer(id):
     form = GolferForm()
     form['csrf_token'].data = request.cookies.get('csrf_token')
 
-    form.first_name.data = request.json.get('first_name')
-    form.last_name.data = request.json.get('last_name')
-    form.email.data = request.json.get('email')
-    form.phone.data = request.json.get('phone')
-    form.course_id.data = request.json.get('course_id')
+
 
     golfer = Golfer.query.get(id)
     if not golfer:
         return {"error": "Golfer not found"}, 404
 
     if form.validate():
-        golfer.first_name = form.first_name.data
-        golfer.last_name = form.last_name.data
+        golfer.fullname = form.fullname.data
+        golfer.member_status = form.member_status.data
         golfer.email = form.email.data
         golfer.phone = form.phone.data
-        golfer.course_id = form.course_id.data
+        golfer.course_id = current_user.course_id
 
         db.session.commit()
         return golfer.to_dict(), 200

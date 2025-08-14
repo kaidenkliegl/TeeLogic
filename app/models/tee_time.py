@@ -9,7 +9,6 @@ class TeeTime(db.Model):
     id = db.Column(db.Integer, primary_key=True)
     start_time = db.Column(db.DateTime, nullable=False)
     course_id = db.Column(db.Integer, db.ForeignKey(add_prefix_for_prod('courses.id')), nullable=False)
-    interval = db.Column(db.Integer, nullable=False)
     holes = db.Column(db.Integer, nullable=False, default=18)
     max_players = db.Column(db.Integer, nullable=False, default=4)
     available_spots = db.Column(db.Integer, nullable=False, default=4)
@@ -25,7 +24,7 @@ class TeeTime(db.Model):
     created_at = db.Column(db.DateTime, nullable=False, default=datetime.utcnow)
 
     ##relationships
-    reservations = db.relationship("Reservation", back_populates="tee_time", cascade="all, delete-orphan")
+    reservations = db.relationship('Reservation', back_populates='tee_time')
     course = db.relationship("Course", back_populates="tee_times")
     notes = db.relationship('Note', back_populates='tee_time')
 
@@ -35,7 +34,6 @@ class TeeTime(db.Model):
             'id': self.id,
             'start_time': self.start_time.isoformat(),
             'course_id': self.course_id,
-            'interval': self.interval,
             'holes': self.holes,
             'max_players': self.max_players,
             'available_spots': self.available_spots,
