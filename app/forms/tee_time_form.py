@@ -1,20 +1,22 @@
 from flask_wtf import FlaskForm
-from wtforms import DateField, TimeField, IntegerField, SelectField, SubmitField
-from wtforms.validators import DataRequired, NumberRange
+from wtforms import IntegerField, SelectField, StringField, SubmitField
+from wtforms.fields import DateTimeField
+from wtforms.validators import DataRequired, Optional, AnyOf
 
 class TeeTimeForm(FlaskForm):
-    date = DateField("Date", validators=[DataRequired()])
-    time = TimeField("Time", validators=[DataRequired()])
-    group_size = IntegerField("Group Size", validators=[DataRequired(), NumberRange(min=1, max=4)])
-    course_id = SelectField("Course", coerce=int, validators=[DataRequired()])
+    start_time = DateTimeField(
+        "Start Time",
+        validators=[DataRequired()],
+        format='%Y-%m-%d %H:%M:%S'  # this will produce a Python datetime object
+    )
+    course_id = IntegerField("Course ID", validators=[DataRequired()])
+    holes = IntegerField("Holes", validators=[Optional()])
+    max_players = IntegerField("Max Players", validators=[Optional()])
+    available_spots = IntegerField("Available Spots", validators=[Optional()])
     status = SelectField(
         "Status",
-        choices=[
-            ('available', 'Available'),
-            ('blocked', 'Blocked'),
-            ('split', 'Split'),
-            ('event', 'Event')
-        ],
-        validators=[DataRequired()]
+        choices=[('available', 'Available'), ('blocked', 'Blocked'), ('split', 'Split'), ('event', 'Event')],
+        validators=[DataRequired(), AnyOf(['available', 'blocked', 'split', 'event'])]
     )
+    event_name = StringField("Event Name", validators=[Optional()])
     submit = SubmitField('Save Tee Time')

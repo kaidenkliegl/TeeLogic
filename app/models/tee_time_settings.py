@@ -21,6 +21,6 @@ class TeeTimeSetting(db.Model):
             'id': self.id,
             'start_time': self.start_time.strftime('%H:%M'),
             'interval_minutes': self.interval_minutes,
-            'end_time': self.end_time,
+            'end_time': self.end_time.strftime('%H:%M'),
             'course_id': self.course_id
         }

@@ -1,6 +1,6 @@
 from flask import Blueprint, request, jsonify
 from flask_login import login_required
-from app.models import db, Reservation, ReservationGolfer, TeeTime
+from app.models import db, Reservation, ReservationGolfer, TeeTime, Golfer
 from app.forms import ReservationForm  
 
 reservation_routes = Blueprint("reservations", __name__)
@@ -10,6 +10,8 @@ reservation_routes = Blueprint("reservations", __name__)
 @login_required
 def get_tee_time_reservation(tee_time_id):
     reservations = Reservation.query.filter_by(tee_time_id=tee_time_id).order_by(Reservation.id.asc()).all()
+    if not reservations:
+        return jsonify([]), 200
     result = []
     for r in reservations:
         golfers = ReservationGolfer.query.filter_by(reservation_id=r.id).all()
@@ -17,6 +19,20 @@ def get_tee_time_reservation(tee_time_id):
             "reservation": r.to_dict(),
             "golfers": [g.to_dict() for g in golfers]
         })
+    return jsonify(result), 200
+
+@reservation_routes.route("/single/<int:reservation_id>", methods=["GET"])
+@login_required
+def get_single_reservation(reservation_id):
+    reservation = Reservation.query.get(reservation_id)
+    if not reservation:
+        return jsonify({"error": "Reservation not found"}), 404
+
+    result = {
+        "reservation": reservation.to_dict(),
+        "golfer": reservation.golfer.to_dict()  # directly include the single golfer
+    }
+
     return jsonify(result), 200
 
 
@@ -49,6 +65,7 @@ def create_reservation(tee_time_id):
     form['csrf_token'].data = request.cookies.get('csrf_token')
 
     tee_time = TeeTime.query.filter_by(id=tee_time_id).one_or_none()
+  
     if not tee_time:
         return {"error": "Tee time not found"}, 404
 
@@ -56,17 +73,30 @@ def create_reservation(tee_time_id):
         return {"error": "No spots available for this tee time"}, 400
 
     if form.validate_on_submit():
+        golfer_name = form.golfer.data.strip()
+        golfer = Golfer.query.filter_by(fullname=golfer_name,course_id=tee_time.course_id).first()
+        if not golfer:
+            golfer = Golfer(fullname=golfer_name, course_id=tee_time.course_id )
+            db.session.add(golfer)
+            db.session.commit()  
+
         reservation = Reservation(
+            golfer_id=golfer.id,
             tee_time_id=tee_time_id,
             total_price=form.total_price.data,
-            status="booked"
+            status = "booked"
         )
+
         tee_time.available_spots -= 1
         db.session.add(reservation)
         db.session.commit()
-        return jsonify(reservation.to_dict()), 201
 
-    return {"error": "Invalid form submission"}, 400
+        return jsonify(reservation.to_dict()), 201
+    print(form.errors)
+    print(tee_time_id)
+    return jsonify({"error": "Invalid form submission"}), 400
+
+
 
 
 @reservation_routes.route("/<int:reservation_id>", methods=["PATCH"])
@@ -81,9 +111,21 @@ def update_reservation(reservation_id):
 
     if form.validate_on_submit():
         reservation.total_price = form.total_price.data
-        reservation.status = form.status.data
 
         db.session.commit()
         return reservation.to_dict(), 200
 
     return {"error": "Invalid form submission"}, 400
+
+@reservation_routes.route("/<int:reservation_id>/delete", methods=["DELETE"])
+@login_required
+def delete_reservation(reservation_id):
+
+    reservation = Reservation.query.filter_by(id=reservation_id).one_or_none()
+    if not reservation:
+        return {"error": "Reservation not found"}, 404
+
+    db.session.delete(reservation)
+    db.session.commit()
+    return jsonify({"removed reservation"})
+

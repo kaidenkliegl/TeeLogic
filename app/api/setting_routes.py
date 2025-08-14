@@ -37,22 +37,25 @@ def get_setting(course_id):
 
 @tee_time_settings_routes.route('/<int:setting_id>', methods=['PUT'])
 @login_required
-def update_setting():
-    form = TeeTimeSettingForm(setting_id)
+def update_setting(setting_id):
+    form = TeeTimeSettingForm()
     form['csrf_token'].data = request.cookies.get('csrf_token')
 
-    if form.validate_on_submit():
-        settings = TeeTimeSetting.query.get(setting_id)
+    setting = TeeTimeSetting.query.get(setting_id)
+    if not setting:
+        return jsonify({"error": "Setting not found"}), 404
 
+    if form.validate_on_submit():
         setting.start_time = form.start_time.data
+        setting.end_time = form.end_time.data
         setting.interval_minutes = form.interval_minutes.data
-        setting.max_tee_times = form.max_tee_times.data
         setting.course_id = form.course_id.data
 
         db.session.commit()
-        return setting.to_dict(), 201
+        return setting.to_dict(), 200
 
     return jsonify({"errors": form.errors}), 400
+
 
 # Not sure if I really want to delete settings but I will keep it there just in case 
 @tee_time_settings_routes.route('/<int:setting_id>', methods=['DELETE'])

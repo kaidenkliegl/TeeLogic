@@ -10,7 +10,6 @@ def seed_tee_times():
         tee_times.append(TeeTime(
             start_time=start_time + timedelta(minutes=10 * i),
             course_id=1,
-            interval=10,
             holes=18,
             max_players=4,
             available_spots=4,

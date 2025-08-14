@@ -1,18 +1,14 @@
 from flask_wtf import FlaskForm
-from wtforms import StringField, SubmitField, IntegerField
+from wtforms import StringField, SubmitField, IntegerField, SelectField
 from wtforms.validators import DataRequired, Length, Email, Optional, NumberRange, Regexp
 
 class GolferForm(FlaskForm):
-    first_name = StringField(
-        'First Name',
-        validators=[DataRequired(message="First name is required."), Length(max=50)]
+    fullname = StringField(
+        'Fullname',
+        validators=[DataRequired(message="Fullname is required."), Length(max=50)]
     )
 
-    last_name = StringField(
-        'Last Name',
-        validators=[DataRequired(message="Last name is required."), Length(max=50)]
-    )
-
+    
     email = StringField(
         'Email',
         validators=[Optional(), Email(message="Invalid email address."), Length(max=100)]
@@ -26,10 +22,13 @@ class GolferForm(FlaskForm):
             Regexp(r'^\+?[\d\s\-()]+$', message="Invalid phone number format.")
         ]
     )
-
-    course_id = IntegerField(
-        'Course ID',
-        validators=[DataRequired(message="Course ID is required."), NumberRange(min=1, message="Invalid course ID.")]
+    member_status = SelectField(
+        'Membership Status',
+        choices=[('guest', 'Guest'), ('member', 'Member'), ('league', 'League')],
+        default='guest',
+        validators=[DataRequired()]
     )
+
+    
 
     submit = SubmitField('Save Golfer')
