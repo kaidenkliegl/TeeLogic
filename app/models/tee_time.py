@@ -27,9 +27,9 @@ class TeeTime(db.Model):
     created_at = db.Column(db.DateTime, nullable=False, default=datetime.utcnow)
 
     ##relationships
-    reservations = db.relationship('Reservation', back_populates='tee_times')
+    reservations = db.relationship('Reservation', back_populates='tee_time')
     course = db.relationship("Course", back_populates="tee_times")
-    notes = db.relationship('Note', back_populates='tee_times', cascade='all, delete-orphan')
+    notes = db.relationship('Note', back_populates='tee_time', cascade='all, delete-orphan')
 
 
     def to_dict(self):

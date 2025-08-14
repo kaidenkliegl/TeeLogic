@@ -16,13 +16,13 @@ class Reservation(db.Model):
     tee_time = db.relationship('TeeTime', back_populates='reservations')
     reservation_golfers = db.relationship('ReservationGolfer', back_populates='reservation', cascade='all, delete-orphan')
 
-    golfer = db.relationship('Golfer', back_populates='reservations')  # single golfer
+    golfer = db.relationship('Golfer', back_populates='reservations')  
 
     def to_dict(self):
         return {
             'id': self.id,
             'tee_time_id': self.tee_time_id,
-            'golfer': self.golfer.to_dict(),  # single golfer
+            'golfer': self.golfer.to_dict(),  
             'total_price': float(self.total_price),
             'created_at': self.created_at.isoformat(),
             'status': self.status
