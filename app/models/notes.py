@@ -14,7 +14,7 @@ class Note(db.Model):
     tee_time_id = db.Column(db.Integer, db.ForeignKey(add_prefix_for_prod('tee_times.id')), nullable=False)
 
     # Relationships
-    tee_time = db.relationship("TeeTime", back_populates="notes")
+    tee_time = db.relationship("TeeTime", back_populates="notes", primaryjoin='Note.tee_time_id == TeeTime.id')
     author = db.relationship("User", back_populates="notes")
 
     def to_dict(self):
