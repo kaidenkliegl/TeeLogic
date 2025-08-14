@@ -5,7 +5,7 @@ class TeeTimeSetting(db.Model):
     __tablename__ = 'tee_time_settings'
 
     if environment == "production":
-        __table_args__ = {'schema': SCHEMA
+        __table_args__ = {'schema': SCHEMA}
 
     id = db.Column(db.Integer, primary_key=True)
     # Store the time of day

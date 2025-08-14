@@ -7,7 +7,7 @@ class TeeTime(db.Model):
     __tablename__ = 'tee_times'
 
     if environment == "production":
-        __table_args__ = {'schema': SCHEMA
+        __table_args__ = {'schema': SCHEMA}
 
     id = db.Column(db.Integer, primary_key=True)
     start_time = db.Column(db.DateTime, nullable=False)
