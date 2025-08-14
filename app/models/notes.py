@@ -15,7 +15,7 @@ class Note(db.Model):
 
     # Relationships
     tee_time = db.relationship("TeeTime", back_populates="notes")
-    author = db.relationship("User", back_populates="notes")
+    author = db.relationship("User", back_populates="notes", primaryjoin='Note.tee_time_id == TeeTime.id')
 
     def to_dict(self):
         return {
