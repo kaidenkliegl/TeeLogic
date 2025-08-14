@@ -11,7 +11,7 @@ class GolferForm(FlaskForm):
     
     email = StringField(
         'Email',
-        validators=[Optional(), Email(message="Invalid email address."), Length(max=100)]
+        validators=[Optional(), Length(max=100)]
     )
 
     phone = StringField(
