@@ -27,11 +27,11 @@ def seed():
         undo_tee_times()
         undo_tee_time_settings()
         undo_pricing_rules()
-        undo_courses()
         undo_users()
+        undo_courses()
     # Seed all data in dependency order
-    seed_users()
     seed_courses()
+    seed_users()
     seed_pricing_rules()
     seed_tee_time_settings()
     seed_tee_times() 
@@ -43,8 +43,11 @@ def seed():
 # Creates the `flask seed undo` command
 @seed_commands.command('undo')
 def undo():        
+    undo_notes() 
+    undo_golfers()
+    undo_reservations()
     undo_tee_times()
     undo_tee_time_settings()
     undo_pricing_rules()
-    undo_courses()
     undo_users()
+    undo_courses()
