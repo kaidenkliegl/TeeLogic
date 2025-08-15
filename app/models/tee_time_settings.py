@@ -17,7 +17,10 @@ class TeeTimeSetting(db.Model):
     created_at = db.Column(db.DateTime, nullable=False, default=datetime.utcnow)
 
     ## Relationships
-    course = db.relationship("Course", back_populates="tee_time_setting")
+    course = db.relationship(
+        "Course",
+        back_populates="tee_time_setting"
+    )
 
     def to_dict(self):
         return {
