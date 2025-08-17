@@ -4,11 +4,13 @@ import {
   compose,
   combineReducers,
 } from "redux";
+import golferSlice from "./golfers/golferSlice";
 import thunk from "redux-thunk";
 import sessionReducer from "./session";
 
 const rootReducer = combineReducers({
   session: sessionReducer,
+  golfer: golferSlice.reducer
 });
 
 let enhancer;
