@@ -9,7 +9,7 @@ import {
 
 const initialState = {
   golfers: [],
-  selected: null, 
+  currentGolfer: null, 
   status: "idle",
   error: null,
 };
@@ -27,7 +27,7 @@ const golfersSlice = createSlice({
 
       // Fetch one
       .addCase(fetchGolfer.pending, (state) => { state.status = "loading"; })
-      .addCase(fetchGolfer.fulfilled, (state, action) => { state.status = "succeeded"; state.selected = action.payload; })
+      .addCase(fetchGolfer.fulfilled, (state, action) => { state.status = "succeeded"; state.currentGolfer = action.payload; })
       .addCase(fetchGolfer.rejected, (state, action) => { state.status = "failed"; state.error = action.payload; })
 
       // Add
