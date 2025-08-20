@@ -5,33 +5,25 @@ from app.forms import ReservationForm
 
 reservation_routes = Blueprint("reservations", __name__)
 
+
 # GET reservations for a tee time
 @reservation_routes.route("/<int:tee_time_id>", methods=["GET"])
 @login_required
 def get_tee_time_reservation(tee_time_id):
-    reservations = Reservation.query.filter_by(tee_time_id=tee_time_id).order_by(Reservation.id.asc()).all()
+    reservations = (
+        Reservation.query.filter_by(tee_time_id=tee_time_id)
+        .order_by(Reservation.id.asc())
+        .all()
+    )
+
     if not reservations:
         return jsonify([]), 200
+
     result = []
     for r in reservations:
         golfers = ReservationGolfer.query.filter_by(reservation_id=r.id).all()
-        result.append({
-            "reservation": r.to_dict(),
-            "golfers": [g.to_dict() for g in golfers]
-        })
-    return jsonify(result), 200
-
-@reservation_routes.route("/single/<int:reservation_id>", methods=["GET"])
-@login_required
-def get_single_reservation(reservation_id):
-    reservation = Reservation.query.get(reservation_id)
-    if not reservation:
-        return jsonify({"error": "Reservation not found"}), 404
-
-    result = {
-        "reservation": reservation.to_dict(),
-        "golfer": reservation.golfer.to_dict()  # directly include the single golfer
-    }
+        reservation_dict = r.to_dict()
+        result.append(reservation_dict)
 
     return jsonify(result), 200
 

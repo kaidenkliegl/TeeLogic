@@ -6,6 +6,7 @@ import GolferForm from '../components/Golfers/GolferForm';
 import GolferList from '../components/Golfers/GolferList';
 import TeeTimeList from '../components/TeeTimes/teeTimeList';
 import Layout from './Layout';
+import PricingRules from '../components/Pricing/PricingList';
 
 export const router = createBrowserRouter([
   {
@@ -35,18 +36,15 @@ export const router = createBrowserRouter([
         path: "golfer/new",
         element:<GolferForm/>,
         },
-        {
-          path: "teetimes/all",
-          element:<TeeTimeList/>,
-          }
-          // {
-          //   path: "teetime/:id",
-          //   element:</>,
-          //   },
-          //   {
-          //     path: "teetime/new",
-          //     element:</>,
-          //     },
+      {
+        path: "teetimes/all",
+        element:<TeeTimeList/>,
+      },
+      {
+        path: "pricing/all",
+        element:<PricingRules/>,
+      }
+          
 
     ],
   },
