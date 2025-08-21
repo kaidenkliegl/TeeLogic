@@ -1,0 +1,39 @@
+/* Modal container */
+
+  
+  
+  /* Navigation list as two columns */
+  .modal-nav-container ul {
+    list-style: none;
+    padding: 0;
+    margin: 0;
+    display: grid;
+    grid-template-columns: 1fr 1fr; /* two columns */
+    gap: 10px 20px; /* vertical 10px, horizontal 20px */
+  }
+  
+  .modal-nav-container ul li  {
+    padding: 20px;
+  }
+
+  /* Links styling */
+  .modal-nav-container ul li a {
+    text-decoration: none;
+    color: #333;
+    font-weight: 500;
+    padding: 20px;
+  }
+  
+  .modal-nav-container ul li:hover {
+    background-color: grey;
+  }
+  
+  /* Open navigation button */
+  .open-nav-btn {
+    padding: 10px 20px;
+    cursor: pointer;
+    border-radius: 5px;
+    border: 1px solid #333;
+    background-color: #fff;
+  }
+  

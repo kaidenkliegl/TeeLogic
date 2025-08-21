@@ -10,7 +10,7 @@ export const fetchGolfers = createAsyncThunk(
       return rejectWithValue(errorData.message || 'Failed to fetch golfers');
     }
     const data = await res.json();
-    return data.golfers; // matches your jsonify({"golfers": [...]})
+    return data.golfers; 
   }
 );
 
@@ -55,7 +55,7 @@ export const deleteGolfer = createAsyncThunk(
       const errorData = await res.json();
       return rejectWithValue(errorData.message || 'Failed to delete golfer');
     }
-    return golferId; // just return the ID so slice can remove it
+    return golferId;
   }
 );
 

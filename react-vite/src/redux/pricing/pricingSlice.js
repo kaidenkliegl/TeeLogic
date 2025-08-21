@@ -8,7 +8,7 @@ import {
 
 const initialState = {
   pricingRules: [],
-  status: "idle", // 'idle' | 'loading' | 'succeeded' | 'failed'
+  status: "idle", 
   error: null,
 };
 
@@ -17,7 +17,6 @@ const pricingSlice = createSlice({
   initialState,
   reducers: {},
   extraReducers: (builder) => {
-    // FETCH
     builder
       .addCase(fetchPricingRules.pending, (state) => {
         state.status = "loading";
@@ -47,7 +46,6 @@ const pricingSlice = createSlice({
         state.error = action.payload;
       });
 
-    // EDIT
     builder
       .addCase(editPricingRule.pending, (state) => {
         state.status = "loading";
@@ -67,7 +65,6 @@ const pricingSlice = createSlice({
         state.error = action.payload;
       });
 
-    // DELETE
     builder
       .addCase(deletePricingRule.pending, (state) => {
         state.status = "loading";

@@ -4,14 +4,10 @@ import { createAsyncThunk } from "@reduxjs/toolkit";
 export const fetchPricingRules = createAsyncThunk(
   "pricing/fetchPricingRules",
   async (_, { rejectWithValue }) => {
-    try {
       const res = await fetch("/api/pricing/");
       if (!res.ok) throw new Error("Failed to fetch pricing rules");
       const data = await res.json();
       return data;
-    } catch (err) {
-      return rejectWithValue(err.message);
-    }
   }
 );
 
@@ -19,7 +15,6 @@ export const fetchPricingRules = createAsyncThunk(
 export const createPricingRule = createAsyncThunk(
   "pricing/createPricingRule",
   async (payload, { rejectWithValue }) => {
-    try {
       const res = await fetch("/api/pricing/", {
         method: "POST",
         headers: { "Content-Type": "application/json" },
@@ -31,9 +26,6 @@ export const createPricingRule = createAsyncThunk(
       }
       const data = await res.json();
       return data;
-    } catch (err) {
-      return rejectWithValue(err.message);
-    }
   }
 );
 
@@ -41,7 +33,6 @@ export const createPricingRule = createAsyncThunk(
 export const editPricingRule = createAsyncThunk(
   "pricing/editPricingRule",
   async ({ id, payload }, { rejectWithValue }) => {
-    try {
       const res = await fetch(`/api/pricing/${id}`, {
         method: "PUT",
         headers: { "Content-Type": "application/json" },
@@ -53,9 +44,7 @@ export const editPricingRule = createAsyncThunk(
       }
       const data = await res.json();
       return data;
-    } catch (err) {
-      return rejectWithValue(err.message);
-    }
+ 
   }
 );
 
@@ -63,7 +52,6 @@ export const editPricingRule = createAsyncThunk(
 export const deletePricingRule = createAsyncThunk(
   "pricing/deletePricingRule",
   async (id, { rejectWithValue }) => {
-    try {
       const res = await fetch(`/api/pricing/${id}/delete`, {
         method: "DELETE",
       });
@@ -72,8 +60,5 @@ export const deletePricingRule = createAsyncThunk(
         return rejectWithValue(errorData.error || "Failed to delete");
       }
       return id; // return deleted id so reducer can remove it
-    } catch (err) {
-      return rejectWithValue(err.message);
-    }
   }
 );

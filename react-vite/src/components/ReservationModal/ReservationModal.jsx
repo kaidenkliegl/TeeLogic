@@ -1,8 +1,9 @@
 import { useModal } from "../../context/Modal";
 import ReservationForm from "../Reservation/FormResv";
 import { useSelector, useDispatch } from "react-redux";
-import { useEffect, useState } from "react";
+import { useEffect } from "react";
 import { fetchReservations } from "../../redux/reservation/reservationsThunks";
+import "./ReservationModal.css"
 
 export default function ReservationModal({ teeTimeId }) {
   const { closeModal } = useModal();
@@ -20,10 +21,8 @@ export default function ReservationModal({ teeTimeId }) {
   const spots = Array.from({ length: 4 });
 
   return (
-    <div style={{ padding: "20px", maxWidth: "500px", background: "#fff" }}>
-      <h2>Reservations for Tee Time</h2>
+    <div className="reservation-modal-container">
       {spots.map((_, index) => {
-        // Get reservation at this index if it exists
         const reservation = reservations?.[index];
         return (
           <ReservationForm
@@ -34,10 +33,7 @@ export default function ReservationModal({ teeTimeId }) {
           />
         );
       })}
-      <button
-        onClick={closeModal}
-        style={{ marginTop: "20px", padding: "10px 20px" }}
-      >
+      <button className="reservation-modal-close-btn" onClick={closeModal}>
         Close
       </button>
     </div>

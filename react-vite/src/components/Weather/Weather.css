@@ -1,0 +1,16 @@
+.weather-container {
+    display: flex;
+    align-items: center; 
+    gap: 5px;
+  }
+  
+  .weather-icon {
+    width: 40px;
+    height: 40px;
+  }
+  
+  .weather-temp {
+    font-size: 40px;
+    margin: 0; /* remove default margin */
+  }
+  

@@ -1,19 +1,22 @@
-// src/components/Reservations/ReservationForm.jsx
 import React, { useState, useEffect } from "react";
-import { useDispatch } from "react-redux";
+import { useDispatch, useSelector } from "react-redux";
 import { createReservation } from "../../redux/reservation/reservationsThunks";
-
+import { fetchTeeTimes } from "../../redux/teeTimes/teeTimeThunks";
 function ReservationForm({ reservation, onClose }) {
   const dispatch = useDispatch();
-console.log(reservation)
+  const currentTeeTime = useSelector((state) => state.teetimes.current);
+  const teeTimeDate = new Date(currentTeeTime.start_time).toISOString().split("T")[0];
   const [golferName, setGolferName] = useState("");
   const [totalPrice, setTotalPrice] = useState("");
 
-  // preload data when reservation is loaded
+  // Preload data if reservation exists
   useEffect(() => {
     if (reservation) {
       setGolferName(reservation.golfer?.fullname || "");
       setTotalPrice(reservation.total_price || "");
+    } else {
+      setGolferName("");
+      setTotalPrice("");
     }
   }, [reservation]);
 
@@ -25,27 +28,37 @@ console.log(reservation)
 
     dispatch(
       createReservation({
-        tee_time_id: reservation.tee_time_id,
+        tee_time_id: reservation?.tee_time_id || currentTeeTime?.id, // fallback for new reservation
         golfer: golferName.trim(),
-        total_price: totalPrice
+        total_price: totalPrice,
       })
     )
       .then(() => {
-        if (onClose) onClose();
+        if (!currentTeeTime) return;
+    
+        // Refetch tee times for the current date
+        dispatch(
+          fetchTeeTimes({
+            courseId: currentTeeTime.course_id,
+            date: new Date(currentTeeTime.start_time).toISOString().split("T")[0],
+          })
+        );
+    
+        if (onClose) onClose(); // only call once
       })
-      .catch(err => console.error(err));
-  };
+      .catch((err) => console.error(err));
+    }    
 
   return (
     <div style={{ border: "1px solid #ccc", padding: "20px", marginTop: "20px" }}>
-      <h3>Edit Reservation</h3>
+      <h3>{reservation ? "Edit Reservation" : "New Reservation"}</h3>
       <form onSubmit={handleSubmit}>
         <div style={{ marginBottom: "10px" }}>
           <label>Golfer Full Name:</label>
           <input
             type="text"
             value={golferName}
-            onChange={e => setGolferName(e.target.value)}
+            onChange={(e) => setGolferName(e.target.value)}
             style={{ width: "100%", padding: "8px", marginTop: "5px" }}
             required
           />
@@ -56,13 +69,15 @@ console.log(reservation)
           <input
             type="number"
             value={totalPrice}
-            onChange={e => setTotalPrice(e.target.value)}
+            onChange={(e) => setTotalPrice(e.target.value)}
             style={{ width: "100%", padding: "8px", marginTop: "5px" }}
             required
           />
         </div>
 
-        <button type="submit" style={{ padding: "10px 20px" }}>Save</button>
+        <button type="submit" style={{ padding: "10px 20px" }}>
+          Save
+        </button>
       </form>
     </div>
   );

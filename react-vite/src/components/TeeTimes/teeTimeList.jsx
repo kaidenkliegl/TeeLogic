@@ -1,11 +1,17 @@
 import { useDispatch, useSelector } from "react-redux";
 import { useEffect, useState } from "react";
-import { fetchTeeTimes, deleteTeeTime } from "../../redux/teeTimes/teeTimeThunks";
+import CurrentWeather from "../Weather/Weather";
+import {
+  fetchTeeTimes,
+  deleteTeeTime,
+} from "../../redux/teeTimes/teeTimeThunks";
+import { setCurrentTeeTime } from "../../redux/teeTimes/teeTimeSlice";
+import { nextDay, prevDay } from "../../redux/calender/dateSlice";
 import { useModal } from "../../context/Modal";
 import ReservationModal from "../ReservationModal/ReservationModal";
 import "./TeeTime.css";
-import moneyBtn from "../../../public/dollar-symbol.png"
-import checkMark from "../../../public/check-mark.png"
+import moneyBtn from "../../../public/dollar-symbol.png";
+import checkMark from "../../../public/check-mark.png";
 
 export default function TeeTimeList() {
   const dispatch = useDispatch();
@@ -31,14 +37,16 @@ export default function TeeTimeList() {
     const updatedPlayers = {};
     teeTimes.forEach((tt) => {
       updatedPlayers[tt.id] = tt.players
-        .filter((p) => p.fullname) // only include players with a fullname
+        .filter((p) => p.fullname)
         .map((p) => p.fullname);
     });
     setPlayersByTeeTime(updatedPlayers);
   }, [teeTimes]);
 
-  const openReservationModal = (teeTimeId) => {
-    setModalContent(<ReservationModal teeTimeId={teeTimeId} />);
+  // Set current tee time and open modal
+  const openReservationModal = (teeTime) => {
+    dispatch(setCurrentTeeTime(teeTime)); // set current tee time in Redux
+    setModalContent(<ReservationModal teeTimeId={teeTime.id} />);
   };
 
   if (status === "loading") return <p>Loading tee times...</p>;
@@ -46,56 +54,66 @@ export default function TeeTimeList() {
   if (!teeTimes || teeTimes.length === 0) return <p>No tee times found.</p>;
 
   return (
-    <table className="tee-sheet">
-      <thead className="player_number">
-        <tr>
-          <th>Time</th>
-          <th>Player 1</th>
-          <th>Player 2</th>
-          <th>Player 3</th>
-          <th>Player 4</th>
-          <th>Actions</th>
-        </tr>
-      </thead>
-      <tbody>
-        {teeTimes.map((tt) => {
-          const players = playersByTeeTime[tt.id] || [];
-          const filledPlayers = [
-            ...players,
-            ...Array(tt.max_players - players.length).fill("")
-          ];
+    <>
+      <div>
+        <CurrentWeather />
+      </div>
 
-          return (
-            <tr key={tt.id}>
-              <td
-                onClick={() => openReservationModal(tt.id)}
-                style={{ cursor: "pointer", fontWeight: "bold" }}
-              >
-                {new Date(tt.start_time).toLocaleTimeString([], {
-                  hour: "2-digit",
-                  minute: "2-digit",
-                })}
-              </td>
-              {filledPlayers.map((p, index) => (
-                <td key={index}>
-                  {p}
-                  <button className="status-btn">
-                    <img src={moneyBtn} alt="money icon" className="status-icon" />
+      <div className="date-nav">
+        <button onClick={() => dispatch(prevDay())}>⬅️</button>
+        <h1>{new Date(selectedDate).toLocaleDateString()}</h1>
+        <button onClick={() => dispatch(nextDay())}>➡️</button>
+      </div>
+
+      <table className="tee-sheet">
+        <tbody>
+          {teeTimes.map((tt) => {
+            const players = playersByTeeTime[tt.id] || [];
+            const filledPlayers = [
+              ...players,
+              ...Array(tt.max_players - players.length).fill(""),
+            ];
+
+            return (
+              <tr key={tt.id}>
+                <td
+                  onClick={() => openReservationModal(tt)} // pass full tee time
+                  style={{ cursor: "pointer", fontWeight: "bold" }}
+                >
+                  {new Date(tt.start_time).toLocaleTimeString([], {
+                    hour: "2-digit",
+                    minute: "2-digit",
+                  })}
+                </td>
+                {filledPlayers.map((p, index) => (
+                  <td key={index}>
+                    {p}
+                    <button className="status-btn">
+                      <img
+                        src={moneyBtn}
+                        alt="money icon"
+                        className="status-icon"
+                      />
+                    </button>
+                    <button className="status-btn">
+                      <img
+                        src={checkMark}
+                        alt="check icon"
+                        className="status-icon"
+                      />
+                    </button>
+                  </td>
+                ))}
+                <td>
+                  <button onClick={() => dispatch(deleteTeeTime(tt.id))}>
+                    Cancel
                   </button>
-                  <button className="status-btn">
-                    <img src={checkMark} alt="check icon" className="status-icon"/>
-                  </button>
-              </td>
-              ))}
-              <td>
-                <button onClick={() => dispatch(deleteTeeTime(tt.id))}>
-                  Cancel
-                </button>
-              </td>
-            </tr>
-          );
-        })}
-      </tbody>
-    </table>
+                </td>
+              </tr>
+            );
+          })}
+        </tbody>
+      </table>
+    </>
   );
 }

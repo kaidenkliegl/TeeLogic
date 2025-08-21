@@ -7,8 +7,18 @@ const dateSlice = createSlice({
     setDate: (state, action) => {
       state.selectedDate = action.payload;
     },
+    nextDay: (state) => {
+      const date = new Date(state.selectedDate);
+      date.setDate(date.getDate() + 1);
+      state.selectedDate = date;
+    },
+    prevDay: (state) => {
+      const date = new Date(state.selectedDate);
+      date.setDate(date.getDate() - 1);
+      state.selectedDate = date;
+    },
   },
 });
 
-export const { setDate } = dateSlice.actions;
+export const { setDate, nextDay, prevDay } = dateSlice.actions;
 export default dateSlice.reducer;

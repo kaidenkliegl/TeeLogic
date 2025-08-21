@@ -6,11 +6,11 @@ const teeTimeSlice = createSlice({
   initialState: {
     teeTimes: [],
     current: null,   // holds the current tee time being viewed/edited
-    status: "idle",  // idle | loading | succeeded | failed
+    status: "idle", 
     error: null,
   },
   reducers: {
-    // ✅ Manually set current tee time (e.g. from a list click)
+    // Manually set current tee time (e.g. from a list click)
     setCurrentTeeTime: (state, action) => {
       state.current = action.payload;
     },
@@ -20,7 +20,7 @@ const teeTimeSlice = createSlice({
   },
   extraReducers: (builder) => {
     builder
-      // ✅ Fetch Tee Times
+      // Fetch Tee Times
       .addCase(fetchTeeTimes.pending, (state) => {
         state.status = "loading";
         state.error = null;
@@ -34,7 +34,7 @@ const teeTimeSlice = createSlice({
         state.error = action.payload;
       })
 
-      // ✅ Create Tee Time
+      // Create Tee Time
       .addCase(createTeeTime.pending, (state) => {
         state.status = "loading";
         state.error = null;
@@ -49,7 +49,7 @@ const teeTimeSlice = createSlice({
         state.error = action.payload;
       })
 
-      // ✅ Edit Tee Time
+      // Edit Tee Time
       .addCase(editTeeTime.fulfilled, (state, action) => {
         state.status = "succeeded";
         const updated = action.payload;
@@ -64,7 +64,7 @@ const teeTimeSlice = createSlice({
         state.error = action.payload;
       })
 
-      // ✅ Delete Tee Time
+      // Delete Tee Time
       .addCase(deleteTeeTime.fulfilled, (state, action) => {
         state.status = "succeeded";
         const deletedId = action.payload.tee_time.id;
