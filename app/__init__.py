@@ -14,6 +14,7 @@ from .api.setting_routes import tee_time_settings_routes
 from .api.tee_time_routes import tee_time_routes
 from .seeds import seed_commands
 from .config import Config
+from .api.note_routes import note_routes
 
 
 
@@ -40,6 +41,7 @@ app.register_blueprint(reservation_routes, url_prefix='/api/reservations')
 app.register_blueprint(tee_time_routes, url_prefix='/api/tee_time')
 app.register_blueprint(pricing_rules_routes, url_prefix='/api/pricing')
 app.register_blueprint(tee_time_settings_routes, url_prefix='/api/settings')
+app.register_blueprint(note_routes, url_prefix='/api/notes')
 db.init_app(app)
 Migrate(app, db)
 

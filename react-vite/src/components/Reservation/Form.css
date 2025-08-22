@@ -1,0 +1,101 @@
+/* Form.css */
+
+.reservation-form-container {
+  max-width: 250px;
+  margin: 10px auto;
+  padding: 25px;
+  background-color: white; /* light gray background */
+  font-family: "Segoe UI", Tahoma, Geneva, Verdana, sans-serif;
+}
+
+.reservation-form-container h3 {
+  margin-bottom: 16px;
+  font-size: 1rem;
+  font-weight: 600;
+  color: #333;
+}
+
+.reservation-form-container form div {
+  margin-bottom: 15px;
+  display: flex;
+  flex-direction: column;
+}
+
+.reservation-form-container label {
+  margin-bottom: 5px;
+  font-weight: 500;
+  color: #555;
+}
+
+.reservation-form-container input,
+.reservation-form-container select {
+  padding: 10px;
+  font-size: 1rem;
+  border: 1px solid #ccc;
+  border-radius: 4px;
+  background-color: #fff;
+  transition: border 0.2s, box-shadow 0.2s;
+}
+
+.reservation-form-container input:focus,
+.reservation-form-container select:focus {
+  border-color: #007bff;
+  box-shadow: 0 0 0 2px rgba(0, 123, 255, 0.2);
+  outline: none;
+}
+
+.resv-save {
+  width: 100%;
+  padding: 12px;
+  font-size: 1rem;
+  background-color: #007bff;
+  color: #fff;
+  font-weight: 600;
+  border: none;
+  border-radius: 4px;
+  cursor: pointer;
+  transition: background-color 0.2s;
+}
+.delete-button-container {
+  display: flex;
+  align-items: center;
+  justify-content: end;
+  margin: 0;
+  padding: 0;
+}
+.resv-delt {
+  background-color: white;
+  color: red;
+  border: none;
+  font-weight: bold;
+  font-size: 1.4rem;
+  cursor: pointer;
+}
+.resv-save {
+    width: 100%;
+    padding: 12px;
+    font-size: 1rem;
+    font-weight: 600;
+    color: #fff;
+    background-color: #0056b3; /* main color */
+    border: none;
+    border-radius: 6px;
+    cursor: pointer;
+    transition: background-color 0.2s, transform 0.1s, box-shadow 0.2s;
+    box-shadow: 0 2px 6px rgba(0, 0, 0, 0.1);
+  }
+  
+  .resv-save:hover {
+    background-color: #004494; /* slightly darker on hover */
+    transform: translateY(-1px);
+    box-shadow: 0 4px 8px rgba(0, 0, 0, 0.15);
+  }
+  
+  .resv-save:active {
+    transform: translateY(0);
+    box-shadow: 0 2px 4px rgba(0, 0, 0, 0.1);
+  }
+
+.reservation-form-container select {
+  cursor: pointer;
+}

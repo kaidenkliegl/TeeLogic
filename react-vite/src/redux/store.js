@@ -7,10 +7,20 @@ import {
 import golferSlice from "./golfers/golferSlice";
 import thunk from "redux-thunk";
 import sessionReducer from "./session";
+import dateSlice from "./calender/dateSlice"
+import teeTimeSlice from "./teeTimes/teeTimeSlice"
+import reservationSlice from "./reservation/reservationSlice"
+import PricingSlice from "./pricing/pricingSlice"
+import noteSlice from "./notes/noteSlice"
 
 const rootReducer = combineReducers({
   session: sessionReducer,
-  golfer: golferSlice.reducer
+  golfers: golferSlice.reducer,
+  date: dateSlice,
+  teetimes: teeTimeSlice,
+  reservations: reservationSlice,
+  pricing: PricingSlice,
+  note: noteSlice
 });
 
 let enhancer;

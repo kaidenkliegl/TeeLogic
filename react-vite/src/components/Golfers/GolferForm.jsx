@@ -12,7 +12,7 @@ export default function GolferForm({ golfer }) {
     if (golfer) {
       dispatch(updateGolfer({ id: golfer.id, updates: { name, email } }));
     } else {
-      dispatch(addGolfer({ name, email}));
+      dispatch(addGolfer({ name, email }));
     }
     setName("");
     setEmail("");
@@ -20,9 +20,7 @@ export default function GolferForm({ golfer }) {
 
   return (
     <form onSubmit={handleSubmit} className="p-3 border rounded mt-4">
-      <h2>
-        {golfer ? "Edit Golfer" : "Add Golfer"}
-      </h2>
+      <h2>{golfer ? "Edit Golfer" : "Add Golfer"}</h2>
       <input
         placeholder="Name"
         value={name}
@@ -33,12 +31,6 @@ export default function GolferForm({ golfer }) {
         placeholder="Email"
         value={email}
         onChange={(e) => setEmail(e.target.value)}
-      />
-      <input
-        className="border p-1 mb-2 w-full"
-        placeholder=""
-        // value={}
-        onChange={(e) => setHandicap(e.target.value)}
       />
       <button type="submit" className="submit-btn">
         {golfer ? "Update" : "Add"}

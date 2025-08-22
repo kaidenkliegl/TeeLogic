@@ -1,0 +1,45 @@
+
+.golfer-detail-container {
+    padding: 30px;
+    font-family: "Segoe UI", Tahoma, Geneva, Verdana, sans-serif;
+    border-left: 1px solid grey;
+    min-height: 100vh;
+  }
+  
+  .golfer-name {
+    font-size: 34px;
+    font-weight: 300;
+    margin-bottom: 30px;
+    color: #2c3e50;
+  }
+  
+  .reservations-header {
+    font-size: 24px;
+    font-weight: 500;
+    margin-bottom: 15px;
+    color: #34495e;
+  }
+  
+  .reservations-list {
+    display: flex;
+    flex-direction: column;
+    gap: 15px;
+  }
+  
+  .reservation-card {
+    border-bottom: 1px solid #dcdcdc;
+    padding: 15px 20px;
+  
+  }
+  
+  
+  .reservation-card p {
+    margin: 5px 0;
+    font-size: 16px;
+    color: #2c3e50;
+  }
+  
+  .error-text {
+    color: #e74c3c;
+  }
+  

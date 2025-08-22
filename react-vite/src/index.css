@@ -1,1 +1,11 @@
 /* TODO: Add sitewide styles */
+html, body {
+    margin: 0;
+    padding: 0;
+    box-sizing: border-box;
+  }
+  
+  /* Optional: make your content fill the viewport */
+  #root {
+    min-height: 100vh;
+  }

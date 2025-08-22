@@ -32,6 +32,23 @@ class TeeTime(db.Model):
     notes = db.relationship('Note', back_populates='tee_time', cascade='all, delete-orphan')
 
 
+    def get_players(self):
+        players = []
+        for res in self.reservations:
+            if res.golfer:
+                players.append({
+                    "id": res.golfer.id,
+                    "fullname": res.golfer.fullname,
+                    "member_status": res.golfer.member_status
+                })
+            else:
+                players.append({
+                    "id": None,
+                    "fullname": "Unknown",
+                    "member_status": "guest"
+                })
+        return players
+
     def to_dict(self):
         return {
             'id': self.id,
@@ -42,5 +59,6 @@ class TeeTime(db.Model):
             'available_spots': self.available_spots,
             'status': self.status,
             'event_name': self.event_name,
+            'players': self.get_players(),
             'created_at': self.created_at.isoformat()
         }

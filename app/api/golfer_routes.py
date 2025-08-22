@@ -1,20 +1,22 @@
 from flask import Blueprint, request, jsonify
 from flask_login import login_required, current_user
-from app.models import db, Golfer
+from app.models import db, Golfer, Reservation
 from app.forms import GolferForm
 
 
 
 golfer_routes = Blueprint('golfers', __name__)
 
-@golfer_routes.route('/<int:course_id>/course', methods=['GET'])
+@golfer_routes.route('/', methods=['GET'])
 @login_required
-def get_golfers(course_id):
+def get_golfers():
     course_id = current_user.course_id
     golfers = Golfer.query.filter_by(course_id=course_id).all()
-    return [g.to_dict() for g in golfers], 200
+    if not golfers:
+        return jsonify({"message": "No golfers found for this course."}), 404
+    return jsonify({"golfers": [g.to_dict() for g in golfers]}), 200
 
-@golfer_routes.route('/<int:id>', methods=['GET'])
+@golfer_routes.route('/<int:id>/one', methods=['GET'])
 @login_required
 def get_golfer(id):
     golfer = Golfer.query.get_or_404(id)
@@ -73,3 +75,11 @@ def delete_golfer(id):
     db.session.delete(golfer)
     db.session.commit()
     return jsonify({"message": "Golfer deleted"}), 200
+
+
+
+@golfer_routes.route("/<int:golfer_id>/reservations")
+@login_required
+def get_golfer_reservations(golfer_id):
+    reservations = Reservation.query.filter_by(golfer_id=golfer_id).all()
+    return jsonify([r.to_dict() for r in reservations])
