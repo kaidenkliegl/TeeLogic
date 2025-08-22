@@ -1,26 +1,28 @@
 // src/components/Pricing/PricingDropdown.jsx
-import React, { useState, useEffect } from "react";
+import { useState, useEffect } from "react";
 import { useDispatch, useSelector } from "react-redux";
 import { fetchPricingRules } from "../../redux/pricing/pricingThunks";
+import PricingForm from "./PricingForm";
+import "./PricingList.css"; // import CSS file
 
 export default function PricingDropdown() {
   const dispatch = useDispatch();
   const { pricingRules } = useSelector((state) => state.pricing);
 
+  // track which day and user type are selected
   const [selectedDay, setSelectedDay] = useState("All");
   const [selectedUserType, setSelectedUserType] = useState("All");
 
+  // fetch pricing rules when component mounts
   useEffect(() => {
     dispatch(fetchPricingRules());
   }, [dispatch]);
 
-  // unique day_of_week categories
+  // unique days and user types from pricing rules
   const days = ["All", ...new Set(pricingRules.map((p) => p.day_of_week))];
-
-  // unique user_type categories
   const userTypes = ["All", ...new Set(pricingRules.map((p) => p.user_type))];
 
-  // filter pricing rules by both day and user type
+  // filter rules based on selected day and user type
   const filteredRules = pricingRules.filter((p) => {
     const dayMatch = selectedDay === "All" || p.day_of_week === selectedDay;
     const userTypeMatch =
@@ -29,57 +31,49 @@ export default function PricingDropdown() {
   });
 
   return (
-    <div>
-      <div style={{ marginBottom: "15px" }}>
-        <label htmlFor="day-select" style={{ marginRight: "5px" }}>
-          Filter by Day:
-        </label>
-        <select
-          id="day-select"
-          value={selectedDay}
-          onChange={(e) => setSelectedDay(e.target.value)}
-          style={{ marginRight: "15px", padding: "5px" }}
-        >
-          {days.map((day) => (
-            <option key={day} value={day}>
-              {day}
-            </option>
-          ))}
-        </select>
-
-        <label htmlFor="user-type-select" style={{ marginRight: "5px" }}>
-          Filter by User Type:
-        </label>
-        <select
-          id="user-type-select"
-          value={selectedUserType}
-          onChange={(e) => setSelectedUserType(e.target.value)}
-          style={{ padding: "5px" }}
-        >
-          {userTypes.map((type) => (
-            <option key={type} value={type}>
-              {type}
-            </option>
-          ))}
-        </select>
-      </div>
-
-      <div style={{ display: "flex", flexWrap: "wrap", gap: "10px" }}>
-        {filteredRules.map((rule) => (
-          <button
-            key={rule.id}
-            style={{
-              padding: "10px 15px",
-              borderRadius: "5px",
-              border: "1px solid #333",
-              cursor: "pointer",
-            }}
+    <>
+    <h3 className="pricing-rule-header">Create new pricing rule</h3>
+      <div className="pricing-dropdown-container">
+        <PricingForm />
+        {/* dropdown filters */}
+        <div className="pricing-filters">
+          <label htmlFor="day-select">Filter by Day:</label>
+          <select
+            id="day-select"
+            value={selectedDay}
+            onChange={(e) => setSelectedDay(e.target.value)}
           >
-            {rule.title} - {rule.day_of_week} - {rule.time_range} - ${rule.rate} -{" "}
-            {rule.user_type}
-          </button>
-        ))}
+            {days.map((day) => (
+              <option key={day} value={day}>
+                {day}
+              </option>
+            ))}
+          </select>
+
+          <label htmlFor="user-type-select">Filter by User Type:</label>
+          <select
+            id="user-type-select"
+            value={selectedUserType}
+            onChange={(e) => setSelectedUserType(e.target.value)}
+          >
+            {userTypes.map((type) => (
+              <option key={type} value={type}>
+                {type}
+              </option>
+            ))}
+          </select>
+        </div>
+
+        {/* filtered pricing rules displayed as buttons */}
+        <div className="pricing-rules-list">
+          {filteredRules.map((rule) => (
+            <button key={rule.id} className="pricing-rule-button">
+              {rule.title} - {rule.day_of_week} - {rule.time_range} - $
+              {rule.rate} - {rule.user_type}
+            </button>
+          ))}
+        </div>
       </div>
-    </div>
+    </>
   );
 }

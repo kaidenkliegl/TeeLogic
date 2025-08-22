@@ -25,7 +25,7 @@ export const router = createBrowserRouter([
         element: <SignupFormPage />,
       },
       {
-      path: "golfer/:id",
+      path: "golfers/:golferId",
       element:<GolferDetail/>
       },
       {
@@ -43,7 +43,8 @@ export const router = createBrowserRouter([
       {
         path: "pricing/all",
         element:<PricingRules/>,
-      }
+      },
+     
           
 
     ],

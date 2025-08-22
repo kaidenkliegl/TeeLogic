@@ -75,3 +75,16 @@ export const updateGolfer = createAsyncThunk(
     return await res.json();
   }
 );
+
+export const fetchGolferReservations = createAsyncThunk(
+  "golfers/fetchReservations",
+  async (golferId, { rejectWithValue }) => {
+    console.log(golferId)
+    const res = await fetch(`/api/golfers/${golferId}/reservations`, { credentials: "include" });
+    if (!res.ok) {
+      const error = await res.json();
+      return rejectWithValue(error.message || "Error fetching reservations");
+    }
+    return await res.json(); 
+  }
+);

@@ -135,4 +135,17 @@ def delete_tee_time(tee_time_id):
 
     return {"message": "Tee time deleted successfully", "tee_time": deleted_time}, 200
     
-    
+@tee_time_routes.route("/block/<int:tee_time_id>", methods=["PATCH"])
+@login_required
+def block_tee_time(tee_time_id):
+    tee_time = TeeTime.query.get(tee_time_id)
+    if not tee_time:
+        return jsonify({"error": "Tee time does not exist."}), 404
+
+    try:
+        tee_time.status = "blocked"
+        db.session.commit()
+        return jsonify({"id": tee_time.id, "status": tee_time.status}), 200
+    except Exception as e:
+        db.session.rollback()
+        return jsonify({"error": str(e)}), 50

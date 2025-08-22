@@ -1,0 +1,64 @@
+.pricing-rule-form {
+    max-width: 600px;
+    margin: 20px 20px;
+    padding: 0;
+    display: grid;
+    grid-template-columns: repeat(2, 1fr); 
+    gap: 20px; 
+    font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+  }
+  
+  .pricing-input {
+    display: flex;
+    flex-direction: column;
+  }
+  
+  .pricing-input button {
+    grid-column: 1 / -1;
+    padding: 12px;
+    background: linear-gradient(90deg, #007bff, #00bfff);
+    color: white;
+    font-weight: 600;
+    font-size: 16px;
+    border: none;
+    border-radius: 6px;
+    cursor: pointer;
+    transition: transform 0.2s, box-shadow 0.2s;
+  }
+  
+
+  .pricing-input input,
+  .pricing-input select {
+    padding: 10px 5px;
+    font-size: 16px;
+    border: none;
+    border-bottom: 2px solid #bebcbc;
+    background: transparent;
+    transition: border-color 0.3s;
+  }
+  
+  .pricing-input input:focus,
+  .pricing-input select:focus {
+    border-bottom-color: #0b0d10;
+    outline: none;
+    background-color: rgb(243, 236, 236);
+  }
+  .pricing-submit-btn{
+    height: 30px;
+   background-color: rgb(95, 159, 227);
+   border-radius: 3px;
+   border: none;
+   display: flex;
+   align-items: center;
+   justify-content: center;
+  }
+  .pricing-submit-btn:hover{
+    height: 30px;
+   background-color: rgb(75, 115, 157);
+   border-radius: 3px;
+   border: none;
+   display: flex;
+   align-items: center;
+   justify-content: center;
+  }
+  

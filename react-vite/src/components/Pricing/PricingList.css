@@ -1,0 +1,48 @@
+.pricing-dropdown-container{
+    width: 50%;
+}
+.pricing-rule-header{
+    margin: 20px;
+    font-weight: 200;
+    font-size: 20px;
+}
+
+.pricing-dropdown-container {
+    display: flex;
+    flex-direction: column;
+    gap: 15px;
+  }
+  
+  .pricing-filters {
+    display: flex;
+    align-items: center;
+    gap: 10px;
+  }
+  
+  .pricing-filters label {
+    font-weight: bold;
+  }
+  
+  .pricing-filters select {
+    padding: 5px;
+  }
+  
+  .pricing-rules-list {
+    display: flex;
+    flex-wrap: wrap;
+    gap: 15px;
+  }
+  
+  .pricing-rule-button {
+    padding: 10px 15px;
+    border-radius: 3px;
+    border: 1px solid #333;
+    cursor: pointer;
+    background-color: #d4e0fa;
+
+  }
+  
+  .pricing-rule-button:hover {
+    background-color: #e0f0ff;
+  }
+  

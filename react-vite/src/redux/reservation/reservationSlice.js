@@ -44,7 +44,7 @@ const reservationSlice = createSlice({
       // Delete
       .addCase(deleteReservation.fulfilled, (state, action) => {
         state.reservations = state.reservations.filter(
-          (r) => r.reservation.id !== action.payload
+          (r) => r && r.reservation && r.reservation.id !== action.payload
         );
       })
       .addCase(deleteReservation.rejected, (state, action) => {

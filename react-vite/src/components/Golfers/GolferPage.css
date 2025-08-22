@@ -1,0 +1,56 @@
+
+
+.golfer-page-container {
+    display: flex;
+    gap: 20px;
+    padding: 20px;
+  }
+  
+  .golfer-list-container {
+    flex: 1;
+    max-width: 300px;
+  }
+  
+  .golfer-search-input {
+    width: 200px;
+    padding: 5px 10px;
+    margin-bottom: 10px;
+    border-radius: 5px;
+    border: 1px solid #ccc;
+  }
+  
+  .golfer-list {
+    list-style: none;
+    padding: 0;
+    margin: 0;
+  }
+  
+  .golfer-list li {
+    margin-bottom: 5px;
+  }
+  
+  .golfer-name-button {
+    width: 100%;
+    text-align: left;
+    padding: 5px 10px;
+    text-decoration: underline;
+    border: none;
+    background: #fff;
+    cursor: pointer;
+    transition: all 0.2s ease;
+  }
+  
+  .golfer-name-button:hover {
+    background: #f0f8ff;
+  }
+  
+  .golfer-name-button.selected {
+    border: 2px solid blue;
+    background: #e0f0ff;
+  }
+  
+  /* Golfer detail */
+  .golfer-detail-wrapper {
+    flex: 2;
+  }
+  

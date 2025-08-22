@@ -1,41 +1,65 @@
-import { useEffect } from "react";
+import { useEffect, useState } from "react";
 import { useDispatch, useSelector } from "react-redux";
-import { fetchGolfers, deleteGolfer } from "../../redux/golfers/golferThunk";
-import { useNavigate } from "react-router-dom";
+import { fetchGolfers } from "../../redux/golfers/golferThunk";
+import GolferDetail from "./GolferDetail";
+import "./GolferPage.css"; 
 
-export default function GolferList({ onSelect }) {
-  const navigate = useNavigate()
+export default function GolferPage() {
   const dispatch = useDispatch();
-  const { golfers, status, error } = useSelector((state) => state.golfers);
+  const { golfers, status} = useSelector((state) => state.golfers);
+
+  const [searchTerm, setSearchTerm] = useState("");
+  const [selectedGolferId, setSelectedGolferId] = useState(null);
 
   useEffect(() => {
-    console.log(status);
     if (status === "idle") {
       dispatch(fetchGolfers());
     }
   }, [status, dispatch]);
-  console.log(golfers);
 
-  if (status === "loading") return <p>Loading golfers...</p>;
-  if (status === "failed") return <p>Error: {error}</p>;
+  const filteredGolfers = golfers.filter((golfer) =>
+    golfer.fullname.toLowerCase().includes(searchTerm.toLowerCase())
+  );
+
+  const handleSelectGolfer = (golferId) => {
+    setSelectedGolferId(golferId);
+  };
 
   return (
-    <div>
-      <h2>Golfers</h2>
-      <ul>
-        {golfers.map((golfer) => (
-          <button onClick={() => navigate(`/golfer/${golfer.id}`)}>
+    <div className="golfer-page-container">
+      {/* Golfer list */}
+      <div className="golfer-list-container">
+        <h1>Golfers</h1>
+        <input
+          type="text"
+          placeholder="Search golfers..."
+          value={searchTerm}
+          onChange={(e) => setSearchTerm(e.target.value)}
+          className="golfer-search-input"
+        />
+        <ul className="golfer-list">
+          {filteredGolfers.map((golfer) => (
             <li key={golfer.id}>
-              <h1>{golfer.fullname}</h1>
-              {/* <button
-              onClick={() => dispatch(deleteGolfer(golfer.id))}
-            >
-              Delete
-            </button> */}
+              <button
+                onClick={() => handleSelectGolfer(golfer.id)}
+                className={`golfer-name-button ${selectedGolferId === golfer.id ? "selected" : ""}`}
+              >
+                {golfer.fullname}
+              </button>
             </li>
-          </button>
-        ))}
-      </ul>
+          ))}
+          {filteredGolfers.length === 0 && <li>No golfers found</li>}
+        </ul>
+      </div>
+
+      {/* Golfer detail */}
+      <div className="golfer-detail-wrapper">
+        {selectedGolferId ? (
+          <GolferDetail golferId={selectedGolferId} />
+        ) : (
+          <p>Select a golfer to see details</p>
+        )}
+      </div>
     </div>
   );
 }

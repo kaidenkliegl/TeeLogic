@@ -11,6 +11,7 @@ import dateSlice from "./calender/dateSlice"
 import teeTimeSlice from "./teeTimes/teeTimeSlice"
 import reservationSlice from "./reservation/reservationSlice"
 import PricingSlice from "./pricing/pricingSlice"
+import noteSlice from "./notes/noteSlice"
 
 const rootReducer = combineReducers({
   session: sessionReducer,
@@ -18,7 +19,8 @@ const rootReducer = combineReducers({
   date: dateSlice,
   teetimes: teeTimeSlice,
   reservations: reservationSlice,
-  pricing: PricingSlice
+  pricing: PricingSlice,
+  note: noteSlice
 });
 
 let enhancer;

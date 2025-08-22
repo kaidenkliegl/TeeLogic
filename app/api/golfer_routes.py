@@ -1,6 +1,6 @@
 from flask import Blueprint, request, jsonify
 from flask_login import login_required, current_user
-from app.models import db, Golfer
+from app.models import db, Golfer, Reservation
 from app.forms import GolferForm
 
 
@@ -75,3 +75,11 @@ def delete_golfer(id):
     db.session.delete(golfer)
     db.session.commit()
     return jsonify({"message": "Golfer deleted"}), 200
+
+
+
+@golfer_routes.route("/<int:golfer_id>/reservations")
+@login_required
+def get_golfer_reservations(golfer_id):
+    reservations = Reservation.query.filter_by(golfer_id=golfer_id).all()
+    return jsonify([r.to_dict() for r in reservations])

@@ -1,14 +1,17 @@
 import { useDispatch, useSelector } from "react-redux";
 import { useEffect, useState } from "react";
 import CurrentWeather from "../Weather/Weather";
+import { editTeeTime } from "../../redux/teeTimes/teeTimeThunks";
+import DatePicker from "../Calender/Calender";
+import UserNote from "../UserNote/UserNote";
 import {
   fetchTeeTimes,
   deleteTeeTime,
 } from "../../redux/teeTimes/teeTimeThunks";
 import { setCurrentTeeTime } from "../../redux/teeTimes/teeTimeSlice";
-import { nextDay, prevDay } from "../../redux/calender/dateSlice";
+import { nextDay, prevDay, setDate } from "../../redux/calender/dateSlice";
 import { useModal } from "../../context/Modal";
-import ReservationModal from "../ReservationModal/ReservationModal";
+import ReservationModal from "../ReservationModal/reservationModal";
 import "./TeeTime.css";
 import moneyBtn from "../../../public/dollar-symbol.png";
 import checkMark from "../../../public/check-mark.png";
@@ -43,10 +46,35 @@ export default function TeeTimeList() {
     setPlayersByTeeTime(updatedPlayers);
   }, [teeTimes]);
 
-  // Set current tee time and open modal
   const openReservationModal = (teeTime) => {
-    dispatch(setCurrentTeeTime(teeTime)); // set current tee time in Redux
-    setModalContent(<ReservationModal teeTimeId={teeTime.id} />);
+    dispatch(setCurrentTeeTime(teeTime));
+
+    // Pass a callback to refresh tee times when modal closes
+    setModalContent(
+      <ReservationModal
+        teeTimeId={teeTime.id}
+        onReservationChange={() => {
+          const formattedDate = new Date(selectedDate)
+            .toISOString()
+            .split("T")[0];
+          dispatch(fetchTeeTimes({ courseId, date: formattedDate }));
+        }}
+      />
+    );
+  };
+
+  const handleBlock = (teeTime) => {
+    dispatch(
+      editTeeTime({ teeTimeId: teeTime.id, teeTimeData: { status: "blocked" } })
+    )
+      .unwrap()
+      .then(() => {
+        const formattedDate = new Date(selectedDate)
+          .toISOString()
+          .split("T")[0];
+        dispatch(fetchTeeTimes({ courseId, date: formattedDate }));
+      })
+      .catch((err) => console.error("Failed to block tee time", err));
   };
 
   if (status === "loading") return <p>Loading tee times...</p>;
@@ -54,66 +82,90 @@ export default function TeeTimeList() {
   if (!teeTimes || teeTimes.length === 0) return <p>No tee times found.</p>;
 
   return (
-    <>
-      <div>
-        <CurrentWeather />
-      </div>
+    <div className="tee-time-layout">
+      {/* Calendar + Notes on the left */}
+      <aside className="calendar-note-container">
+        <DatePicker onDateSelect={(date) => dispatch(setDate(date))} />
+        <UserNote />
+      </aside>
 
-      <div className="date-nav">
-        <button onClick={() => dispatch(prevDay())}>⬅️</button>
-        <h1>{new Date(selectedDate).toLocaleDateString()}</h1>
-        <button onClick={() => dispatch(nextDay())}>➡️</button>
-      </div>
+      {/* Tee sheet on the right */}
+      <div className="tee-time-main">
+        <div className="tee-time-headers">
+          <div className="current-date-nav">
+            <button onClick={() => dispatch(setDate(new Date()))}>Today</button>
+          </div>
+          <div className="date-nav">
+            <button onClick={() => dispatch(prevDay())}>&lt;</button>
+            <h1>{new Date(selectedDate).toLocaleDateString()}</h1>
+            <button onClick={() => dispatch(nextDay())}>&gt;</button>
+          </div>
+          <CurrentWeather />
+        </div>
 
-      <table className="tee-sheet">
-        <tbody>
-          {teeTimes.map((tt) => {
-            const players = playersByTeeTime[tt.id] || [];
-            const filledPlayers = [
-              ...players,
-              ...Array(tt.max_players - players.length).fill(""),
-            ];
+        <table className="tee-sheet">
+          <tbody>
+            {teeTimes.map((tt) => {
+              const players = playersByTeeTime[tt.id] || [];
+              const filledPlayers = [
+                ...players,
+                ...Array(tt.max_players - players.length).fill(""),
+              ];
 
-            return (
-              <tr key={tt.id}>
-                <td
-                  onClick={() => openReservationModal(tt)} // pass full tee time
-                  style={{ cursor: "pointer", fontWeight: "bold" }}
-                >
-                  {new Date(tt.start_time).toLocaleTimeString([], {
-                    hour: "2-digit",
-                    minute: "2-digit",
-                  })}
-                </td>
-                {filledPlayers.map((p, index) => (
-                  <td key={index}>
-                    {p}
-                    <button className="status-btn">
-                      <img
-                        src={moneyBtn}
-                        alt="money icon"
-                        className="status-icon"
-                      />
+              return (
+                <tr key={tt.id}>
+                  <td
+                    onClick={() => openReservationModal(tt)}
+                    style={{ cursor: "pointer", fontWeight: "bold" }}
+                  >
+                    {new Date(tt.start_time).toLocaleTimeString([], {
+                      hour: "2-digit",
+                      minute: "2-digit",
+                    })}
+                  </td>
+                  {filledPlayers.map((p, index) => (
+                    <td key={index}>
+                      {p}
+                      <button className="status-btn">
+                        <img
+                          src={moneyBtn}
+                          alt="money icon"
+                          className="status-icon"
+                        />
+                      </button>
+                      <button className="status-btn">
+                        <img
+                          src={checkMark}
+                          alt="check icon"
+                          className="status-icon"
+                        />
+                      </button>
+                    </td>
+                  ))}
+                  <td>
+                    <button onClick={() => dispatch(deleteTeeTime(tt.id))}>
+                      Cancel
                     </button>
-                    <button className="status-btn">
-                      <img
-                        src={checkMark}
-                        alt="check icon"
-                        className="status-icon"
-                      />
+                    <button
+                      onClick={() => handleBlock(tt)}
+                      disabled={tt.status === "blocked"}
+                      style={{
+                        backgroundColor:
+                          tt.status === "blocked" ? "#ccc" : "#28a745",
+                        color: "white",
+                        cursor:
+                          tt.status === "blocked" ? "not-allowed" : "pointer",
+                      }}
+                    >
+                      {tt.status === "blocked" ? "Blocked" : "Block"}
                     </button>
                   </td>
-                ))}
-                <td>
-                  <button onClick={() => dispatch(deleteTeeTime(tt.id))}>
-                    Cancel
-                  </button>
-                </td>
-              </tr>
-            );
-          })}
-        </tbody>
-      </table>
-    </>
+                </tr>
+              );
+            })}
+          </tbody>
+        </table>
+      </div>
+    </div>
   );
 }

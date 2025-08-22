@@ -2,14 +2,14 @@ import { createAsyncThunk } from "@reduxjs/toolkit";
 
 // GET all pricing rules
 export const fetchPricingRules = createAsyncThunk(
-  "pricing/fetchPricingRules",
-  async (_, { rejectWithValue }) => {
+    "pricing/fetchPricingRules",
+    async () => {
       const res = await fetch("/api/pricing/");
       if (!res.ok) throw new Error("Failed to fetch pricing rules");
       const data = await res.json();
       return data;
-  }
-);
+    }
+  );
 
 // POST / create a pricing rule
 export const createPricingRule = createAsyncThunk(

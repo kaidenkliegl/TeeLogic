@@ -1,11 +1,10 @@
-/* Make note match calendar width */
 .note-container {
     display: flex;
     align-items: center;
     flex-direction: column;
-    width: 100%; /* full width of parent container */
+    width: 100%; 
     min-height: 300px;
-    background-color: lightblue; /* sticky note yellow */
+    background-color: lightblue; 
     border: 1px solid #f0e68c;
     border-radius: 8px;
     margin-top: 25px;

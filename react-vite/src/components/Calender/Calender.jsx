@@ -2,6 +2,7 @@ import Calendar from "react-calendar";
 import "react-calendar/dist/Calendar.css";
 import { useDispatch, useSelector } from "react-redux";
 import { setDate } from "../../redux/calender/dateSlice";
+import "./Calender.css"
 
 export default function DatePicker() {
   const dispatch = useDispatch();
@@ -14,9 +15,6 @@ export default function DatePicker() {
   return (
     <div className="calendar-wrapper">
       <Calendar onChange={handleChange} value={selectedDate} />
-      <p className="mt-2 text-gray-700">
-        Selected Date: <strong>{new Date(selectedDate).toDateString()}</strong>
-      </p>
     </div>
   );
 }
