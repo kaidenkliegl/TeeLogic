@@ -7,7 +7,7 @@ export default function ModalNavButton() {
   const location = useLocation();
 
   const routeLabels = {
-    "/signup": "Signup",
+    "/signup": "Signup Staff",
     "/golfer/all": "All Golfers",
     "/golfer/new": "New Golfer",
     "/teetimes/all": "All Tee Times",
