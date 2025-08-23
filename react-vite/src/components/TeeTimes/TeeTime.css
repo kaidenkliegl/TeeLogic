@@ -21,7 +21,7 @@
 /* Tee sheet area */
 .tee-time-main {
   flex: 1;
-  padding: 20px;
+  padding: 5px;
   overflow-y: auto; 
   background: white;
 }
@@ -49,16 +49,32 @@
 .date-nav h1{
   font-weight: 100;
   font-style: italic;
+  color: rgb(100, 96, 96);
   font-size: 40px;
   padding: 0 10px;
+}
+.todays-btn{
+  padding: 10px;
+  width: 80px;
+  background-color: #156C9D;
+  color: #FFFFFF;
+  border: none;
+  border-radius: 3px;
+}
+.todays-btn:hover{
+  padding: 10px;
+  width: 80px;
+  background-color: #4BA3D0;
+  color: #FFFFFF;
+  border: none;
+  border-radius: 3px;
 }
 .date-nav button{
   background-color: transparent;
   border: none;
   font-size: 25px;
   transition: box-shadow 0.3s ease, transform 0.2s ease; 
-  color: rgb(61, 61, 235);
-  text-decoration: underline;
+  color: rgb(55, 55, 57);
 }
 .date-nav button:hover{
   background-color: transparent;
@@ -96,13 +112,25 @@
   width: 30px;
 
 }
+.tee-sheet td:first-child:hover {
+  
+  background-color: rgb(195, 177, 177);
+
+
+}
 
 
 .status-btn {
   float: right;
-  margin-left: 10px; 
-  margin-right: 10px;
-  background-color: hsl(240, 23%, 97%);
+  margin-left: 3px; 
+  margin-right: 3px;
+  
+  background-color: #abc5d3;
+  transition: background 0.2s;
+}
+
+.status-btn.active {
+  background: rgb(87, 186, 87);
 }
 
   
@@ -123,4 +151,18 @@
 
 .tee-sheet button:hover {
   border-color: #666;
+}
+.button-holder{
+  display: flex;
+  align-items: center;
+  justify-content: center;
+}
+.delete-btn, .block-btn{
+  background-color: #156C9D;
+  color: white;
+}
+.delete-btn:hover, .block-btn:hover{
+  background-color: #4BA3D0;
+  color: white;
+  border: none;
 }

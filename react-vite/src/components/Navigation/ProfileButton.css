@@ -1,0 +1,73 @@
+
+
+  .profile-button {
+    background: transparent;
+    border: none;
+    cursor: pointer;
+    padding: 5px; /* adjust spacing around the icon */
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    margin-right: 40px;
+  }
+  
+  .profile-icon {
+    width: 40px;   
+    height: 40px;  
+    color: white;
+  }
+  
+  .profile-dropdown {
+    position: absolute;
+    top: 45px;
+    right: 0;
+    margin-right: 50px;
+    background-color: white;
+    border: 1px solid #ddd;
+    border-radius: 8px;
+    width: 200px;
+    box-shadow: 0 4px 12px rgba(0, 0, 0, 0.15);
+    padding: 10px 0;
+    list-style: none;
+    z-index: 1000;
+    display: flex;
+    flex-direction: column;
+  }
+  
+  .profile-dropdown li {
+    padding: 10px 20px;
+    font-size: 14px;
+    color: #333;
+    cursor: default;
+  }
+  
+  .profile-dropdown li button {
+    all: unset;
+    cursor: pointer;
+    width: 100%;
+    padding: 10px 20px;
+    text-align: left;
+    font-weight: 600;
+    color: #0072ce;
+    border-radius: 6px;
+    transition: background-color 0.2s;
+  }
+  
+  .profile-dropdown li button:hover {
+    background-color: #f0f8ff;
+  }
+  
+  /* Modal trigger items */
+  .profile-dropdown li .open-modal-item {
+    cursor: pointer;
+    font-weight: 600;
+    color: #0072ce;
+    padding: 10px 20px;
+    border-radius: 6px;
+    transition: background-color 0.2s;
+  }
+  
+  .profile-dropdown li .open-modal-item:hover {
+    background-color: #f0f8ff;
+  }
+  

@@ -25,6 +25,7 @@ class TeeTime(db.Model):
     )
     event_name = db.Column(db.String(255), nullable=True)
     created_at = db.Column(db.DateTime, nullable=False, default=datetime.utcnow)
+    
 
     ##relationships
     reservations = db.relationship('Reservation', back_populates='tee_time')

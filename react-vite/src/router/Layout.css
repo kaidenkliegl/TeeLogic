@@ -12,9 +12,9 @@
     position: sticky;
     top: 0;
     width: 100%;
-    top: 0;
-    background: #c4c4ce;
+    background: #156C9D;
     color: #fff;
+    justify-content: space-between;
     padding: 10px 20px;
     z-index: 1000;
     display: flex;

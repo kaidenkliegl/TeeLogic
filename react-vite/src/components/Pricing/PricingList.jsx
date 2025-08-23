@@ -1,7 +1,7 @@
 // src/components/Pricing/PricingDropdown.jsx
 import { useState, useEffect } from "react";
 import { useDispatch, useSelector } from "react-redux";
-import { fetchPricingRules } from "../../redux/pricing/pricingThunks";
+import { fetchPricingRules, deletePricingRule } from "../../redux/pricing/pricingThunks";
 import PricingForm from "./PricingForm";
 import "./PricingList.css"; // import CSS file
 
@@ -32,7 +32,7 @@ export default function PricingDropdown() {
 
   return (
     <>
-    <h3 className="pricing-rule-header">Create new pricing rule</h3>
+      <h3 className="pricing-rule-header">Create new pricing rule</h3>
       <div className="pricing-dropdown-container">
         <PricingForm />
         {/* dropdown filters */}
@@ -67,10 +67,25 @@ export default function PricingDropdown() {
         {/* filtered pricing rules displayed as buttons */}
         <div className="pricing-rules-list">
           {filteredRules.map((rule) => (
-            <button key={rule.id} className="pricing-rule-button">
-              {rule.title} - {rule.day_of_week} - {rule.time_range} - $
-              {rule.rate} - {rule.user_type}
-            </button>
+            <div key={rule.id} className="pricing-rule-item">
+              <button className="pricing-rule-button">
+                {rule.title} - {rule.day_of_week} - {rule.time_range} - $
+                {rule.rate} - {rule.user_type}
+              </button>
+              <button
+                className="delete-rule-btn"
+                onClick={() => {
+                  const confirmDelete = window.confirm(
+                    "Are you sure you want to delete this pricing rule?"
+                  );
+                  if (confirmDelete) {
+                    dispatch(deletePricingRule(rule.id));
+                  }
+                }}
+              >
+                Delete
+              </button>
+            </div>
           ))}
         </div>
       </div>

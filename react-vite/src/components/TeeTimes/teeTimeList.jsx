@@ -26,6 +26,7 @@ export default function TeeTimeList() {
   const courseId = currentUser?.course_id;
 
   const [playersByTeeTime, setPlayersByTeeTime] = useState({});
+  const [activeButtons, setActiveButtons] = useState({}); // <-- track clicked buttons
 
   // Fetch tee times
   useEffect(() => {
@@ -93,11 +94,16 @@ export default function TeeTimeList() {
       <div className="tee-time-main">
         <div className="tee-time-headers">
           <div className="current-date-nav">
-            <button onClick={() => dispatch(setDate(new Date()))}>Today</button>
+            <button
+              className="todays-btn"
+              onClick={() => dispatch(setDate(new Date()))}
+            >
+              Today
+            </button>
           </div>
           <div className="date-nav">
+            <h1>{new Date(selectedDate).toLocaleDateString()}</h1>{" "}
             <button onClick={() => dispatch(prevDay())}>&lt;</button>
-            <h1>{new Date(selectedDate).toLocaleDateString()}</h1>
             <button onClick={() => dispatch(nextDay())}>&gt;</button>
           </div>
           <CurrentWeather />
@@ -123,39 +129,70 @@ export default function TeeTimeList() {
                       minute: "2-digit",
                     })}
                   </td>
-                  {filledPlayers.map((p, index) => (
-                    <td key={index}>
-                      {p}
-                      <button className="status-btn">
-                        <img
-                          src={moneyBtn}
-                          alt="money icon"
-                          className="status-icon"
-                        />
-                      </button>
-                      <button className="status-btn">
-                        <img
-                          src={checkMark}
-                          alt="check icon"
-                          className="status-icon"
-                        />
-                      </button>
-                    </td>
-                  ))}
-                  <td>
-                    <button onClick={() => dispatch(deleteTeeTime(tt.id))}>
-                      Cancel
+                  {filledPlayers.map((p, index) => {
+                    const moneyKey = `${tt.id}-${index}-money`;
+                    const checkKey = `${tt.id}-${index}-check`;
+
+                    return (
+                      <td key={index}>
+                        {p}
+                        <button
+                          className={`status-btn ${
+                            activeButtons[moneyKey] ? "active" : ""
+                          }`}
+                          onClick={() =>
+                            setActiveButtons((prev) => ({
+                              ...prev,
+                              [moneyKey]: !prev[moneyKey],
+                            }))
+                          }
+                        >
+                          <img
+                            src={moneyBtn}
+                            alt="money icon"
+                            className="status-icon"
+                          />
+                        </button>
+                        <button
+                          className={`status-btn ${
+                            activeButtons[checkKey] ? "active" : ""
+                          }`}
+                          onClick={() =>
+                            setActiveButtons((prev) => ({
+                              ...prev,
+                              [checkKey]: !prev[checkKey],
+                            }))
+                          }
+                        >
+                          <img
+                            src={checkMark}
+                            alt="check icon"
+                            className="status-icon"
+                          />
+                        </button>
+                      </td>
+                    );
+                  })}
+                  <td >
+                    <button
+                      className="delete-btn"
+                      onClick={() => {
+                        const confirmDelete = window.confirm(
+                          "Are you sure you want to delete this tee time?"
+                        );
+                        if (confirmDelete) {
+                          dispatch(deleteTeeTime(tt.id));
+                        }
+                      }}
+                    >
+                      Delete
                     </button>
                     <button
+                      className={`block-btn ${
+                        tt.status === "blocked" ? "disabled" : ""
+                      }`}
                       onClick={() => handleBlock(tt)}
                       disabled={tt.status === "blocked"}
-                      style={{
-                        backgroundColor:
-                          tt.status === "blocked" ? "#ccc" : "#28a745",
-                        color: "white",
-                        cursor:
-                          tt.status === "blocked" ? "not-allowed" : "pointer",
-                      }}
                     >
                       {tt.status === "blocked" ? "Blocked" : "Block"}
                     </button>

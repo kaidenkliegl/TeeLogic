@@ -29,6 +29,7 @@
   
   .pricing-rules-list {
     display: flex;
+    flex-direction: column;
     flex-wrap: wrap;
     gap: 15px;
   }
@@ -38,9 +39,30 @@
     border-radius: 3px;
     border: 1px solid #333;
     cursor: pointer;
-    background-color: #d4e0fa;
+    background-color: #EAEFF2;
 
   }
+  .delete-rule-btn {
+    padding: 8px 14px;              
+    border-radius: 6px;             
+    cursor: pointer;
+    background-color: #f96769;     
+    color: white;                
+    font-weight: 500;              
+    border: 1px solid #d93638;     
+    transition: all 0.2s ease;    
+}
+
+.delete-rule-btn:hover {
+    background-color: #f39193;     
+    border-color: #b52b2f;         
+    box-shadow: 0px 2px 6px rgba(0,0,0,0.15); 
+}
+
+.delete-rule-btn:active {
+    transform: scale(0.97);        
+}
+
   
   .pricing-rule-button:hover {
     background-color: #e0f0ff;
