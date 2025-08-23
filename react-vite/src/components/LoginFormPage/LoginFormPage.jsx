@@ -12,54 +12,78 @@ function LoginFormPage() {
   const [password, setPassword] = useState("");
   const [errors, setErrors] = useState({});
 
-  if (sessionUser) return <Navigate to="/" replace={true} />;
+  if (sessionUser) return <Navigate to="/teetimes/all" replace />;
 
   const handleSubmit = async (e) => {
     e.preventDefault();
 
     const serverResponse = await dispatch(
-      thunkLogin({
-        email,
-        password,
-      })
+      thunkLogin({ email, password })
     );
 
     if (serverResponse) {
       setErrors(serverResponse);
     } else {
-      navigate("/");
+      navigate("/teetimes/all");
+    }
+  };
+
+  const handleDemoLogin = async () => {
+    const demoEmail = "demo@aa.io";
+    const demoPassword = "password"; // replace with your demo user's password
+    const serverResponse = await dispatch(
+      thunkLogin({ email: demoEmail, password: demoPassword })
+    );
+
+    if (serverResponse) {
+      setErrors(serverResponse);
+    } else {
+      navigate("/teetimes/all");
     }
   };
 
   return (
-    <>
-      <h1>Log In</h1>
-      {errors.length > 0 &&
-        errors.map((message) => <p key={message}>{message}</p>)}
-      <form onSubmit={handleSubmit}>
-        <label>
-          Email
-          <input
-            type="text"
-            value={email}
-            onChange={(e) => setEmail(e.target.value)}
-            required
-          />
-        </label>
-        {errors.email && <p>{errors.email}</p>}
-        <label>
-          Password
-          <input
-            type="password"
-            value={password}
-            onChange={(e) => setPassword(e.target.value)}
-            required
-          />
-        </label>
-        {errors.password && <p>{errors.password}</p>}
-        <button type="submit">Log In</button>
-      </form>
-    </>
+    <div className="login-page">
+      <h2 className="teelogic-name">TeeLogic</h2>
+      <div className="login-card">
+        <h1>Log In</h1>
+
+        {errors.general && <p className="error">{errors.general}</p>}
+
+        <form onSubmit={handleSubmit} className="login-form">
+          <div className="form-group">
+            <label>Email</label>
+            <input
+              type="text"
+              value={email}
+              onChange={(e) => setEmail(e.target.value)}
+              required
+              placeholder="Enter your email"
+            />
+            {errors.email && <p className="error">{errors.email}</p>}
+          </div>
+
+          <div className="form-group">
+            <label>Password</label>
+            <input
+              type="password"
+              value={password}
+              onChange={(e) => setPassword(e.target.value)}
+              required
+              placeholder="Enter your password"
+            />
+            {errors.password && <p className="error">{errors.password}</p>}
+          </div>
+
+          <button type="submit" className="login-btn">
+            Log In
+          </button>
+        </form>
+        <button onClick={handleDemoLogin} id="demo-btn">
+          Log in as Demo User
+        </button>
+      </div>
+    </div>
   );
 }
 

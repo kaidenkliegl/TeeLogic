@@ -44,10 +44,15 @@
   align-self: flex-end; /* push to right */
   width: 100px;
   margin-top: 20px;     /* spacing from forms */
-  background-color: white; 
-  border: 1px solid rgb(243, 218, 218);               
+  background-color: #156C9D; 
+  border: none;
+  border-radius: 3px;
+  color: white;              
   font-size: 18px;
   padding: 5px;
   cursor: pointer;
   transition: transform 0.2s ease, color 0.2s ease;
+}
+.reservation-modal-close-btn.bottom:hover {
+ background-color: #4BA3D0;
 }

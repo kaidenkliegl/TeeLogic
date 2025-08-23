@@ -1,29 +1,46 @@
 import { useModal } from "../../context/Modal";
-import { Link } from "react-router-dom";
+import { Link, useLocation } from "react-router-dom";
 import "./NavButton.css";
 
 export default function ModalNavButton() {
   const { setModalContent, closeModal } = useModal();
+  const location = useLocation();
+
+  const routeLabels = {
+    "/signup": "Signup",
+    "/golfer/all": "All Golfers",
+    "/golfer/new": "New Golfer",
+    "/teetimes/all": "All Tee Times",
+    "/pricing/all": "Pricing Rules",
+  };
+
+  const buttonLabel = routeLabels[location.pathname] || "TeeLogic";
 
   const openNavModal = () => {
     setModalContent(
-      <div className="modal-nav-container modal-top-left" >
+      <div className="modal-nav-container modal-top-left">
         <ul>
-          <li><Link to="/" onClick={closeModal}>Home</Link></li>
-          <li><Link to="/login" onClick={closeModal}>Login</Link></li>
-          <li><Link to="/signup" onClick={closeModal}>Signup</Link></li>
-          <li><Link to="/golfer/all" onClick={closeModal}>All Golfers</Link></li>
-          <li><Link to="/golfer/new" onClick={closeModal}>New Golfer</Link></li>
-          <li><Link to="/teetimes/all" onClick={closeModal}>All Tee Times</Link></li>
-          <li><Link to="/pricing/all" onClick={closeModal}>Pricing Rules</Link></li>
+          {Object.entries(routeLabels).map(([path, label]) => (
+            <li key={path}>
+              <Link to={path} onClick={closeModal}>
+                {label}
+              </Link>
+            </li>
+          ))}
         </ul>
       </div>
     );
   };
 
   return (
-    <button className="open-nav-btn" onClick={openNavModal}>
-      Open Navigation
-    </button>
+    <div className="nav-component-container">
+      <button className="Logo">TL</button>
+      <div className="dropdown">
+        <button className="open-nav-btn" onClick={openNavModal}>
+          {buttonLabel}
+        </button>
+        <span className="dropdown-arrow">&#x25BC;</span>
+      </div>
+    </div>
   );
 }

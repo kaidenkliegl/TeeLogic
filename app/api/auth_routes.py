@@ -1,7 +1,6 @@
-from flask import Blueprint, request
+from flask import Blueprint, request, jsonify
 from app.models import User, db
-from app.forms import LoginForm
-from app.forms import SignUpForm
+from app.forms import LoginForm, SignUpForm
 from flask_login import current_user, login_user, logout_user, login_required
 
 auth_routes = Blueprint('auth', __name__)
@@ -23,18 +22,18 @@ def login():
     Logs a user in
     """
     form = LoginForm()
-    # Get the csrf_token from the request cookie and put it into the
-    # form manually to validate_on_submit can be used
-    form['csrf_token'].data = request.cookies['csrf_token']
+    form['csrf_token'].data = request.cookies.get('csrf_token')
+
     if form.validate_on_submit():
-        # Add the user to the session, we are logged in!
         user = User.query.filter(User.email == form.data['email']).first()
-        login_user(user)
-        return user.to_dict()
-    return form.errors, 401
+        if user and user.check_password(form.data['password']):
+            login_user(user)
+            return user.to_dict()
+    return {'errors': {'message': 'Invalid credentials'}}, 401
 
 
 @auth_routes.route('/logout')
+@login_required
 def logout():
     """
     Logs a user out
@@ -49,18 +48,23 @@ def sign_up():
     Creates a new user and logs them in
     """
     form = SignUpForm()
-    form['csrf_token'].data = request.cookies['csrf_token']
+    form['csrf_token'].data = request.cookies.get('csrf_token')
+
     if form.validate_on_submit():
         user = User(
             username=form.data['username'],
             email=form.data['email'],
-            password=form.data['password']
+            password=form.data['password'],  
+            role=form.data['role'],
+            course_id=form.data['course_id']
         )
         db.session.add(user)
         db.session.commit()
-        login_user(user)
         return user.to_dict()
-    return form.errors, 401
+    
+    return form.errors, 400
+
+
 
 
 @auth_routes.route('/unauthorized')

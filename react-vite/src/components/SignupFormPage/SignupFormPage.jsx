@@ -1,94 +1,82 @@
 import { useState } from "react";
 import { useDispatch, useSelector } from "react-redux";
-import { Navigate, useNavigate } from "react-router-dom";
 import { thunkSignup } from "../../redux/session";
 
-function SignupFormPage() {
+export default function SignupForm() {
   const dispatch = useDispatch();
-  const navigate = useNavigate();
-  const sessionUser = useSelector((state) => state.session.user);
-  const [email, setEmail] = useState("");
-  const [username, setUsername] = useState("");
-  const [password, setPassword] = useState("");
-  const [confirmPassword, setConfirmPassword] = useState("");
-  const [errors, setErrors] = useState({});
+  const currentUser = useSelector((state) => state.session.user); // current logged-in user
 
-  if (sessionUser) return <Navigate to="/" replace={true} />;
+  const [username, setUsername] = useState("");
+  const [email, setEmail] = useState("");
+  const [password, setPassword] = useState("");
+  const [role, setRole] = useState("student");
+  const [errors, setErrors] = useState({});
 
   const handleSubmit = async (e) => {
     e.preventDefault();
 
-    if (password !== confirmPassword) {
-      return setErrors({
-        confirmPassword:
-          "Confirm Password field must be the same as the Password field",
-      });
+    if (!currentUser || !currentUser.course_id) {
+      setErrors({ general: "Cannot find your course. Please try again." });
+      return;
     }
 
-    const serverResponse = await dispatch(
-      thunkSignup({
-        email,
-        username,
-        password,
-      })
-    );
+    const newUser = {
+      username,
+      email,
+      password,
+      role,
+      course_id: currentUser.course_id, // automatically use current user's course
+    };
 
-    if (serverResponse) {
-      setErrors(serverResponse);
+    const signupErrors = await dispatch(thunkSignup(newUser));
+    if (signupErrors) {
+      setErrors(signupErrors);
     } else {
-      navigate("/");
+      // optionally show a success message or redirect
+      console.log("User signed up successfully!");
+      setUsername("");
+      setEmail("");
+      setPassword("");
+      setRole("student");
     }
   };
 
   return (
-    <>
-      <h1>Sign Up</h1>
-      {errors.server && <p>{errors.server}</p>}
-      <form onSubmit={handleSubmit}>
-        <label>
-          Email
-          <input
-            type="text"
-            value={email}
-            onChange={(e) => setEmail(e.target.value)}
-            required
-          />
-        </label>
-        {errors.email && <p>{errors.email}</p>}
-        <label>
-          Username
-          <input
-            type="text"
-            value={username}
-            onChange={(e) => setUsername(e.target.value)}
-            required
-          />
-        </label>
-        {errors.username && <p>{errors.username}</p>}
-        <label>
-          Password
-          <input
-            type="password"
-            value={password}
-            onChange={(e) => setPassword(e.target.value)}
-            required
-          />
-        </label>
-        {errors.password && <p>{errors.password}</p>}
-        <label>
-          Confirm Password
-          <input
-            type="password"
-            value={confirmPassword}
-            onChange={(e) => setConfirmPassword(e.target.value)}
-            required
-          />
-        </label>
-        {errors.confirmPassword && <p>{errors.confirmPassword}</p>}
-        <button type="submit">Sign Up</button>
-      </form>
-    </>
+    <form onSubmit={handleSubmit}>
+      <h2>Sign Up</h2>
+      {errors.general && <p style={{ color: "red" }}>{errors.general}</p>}
+      
+      <input
+        type="text"
+        placeholder="Username"
+        value={username}
+        onChange={(e) => setUsername(e.target.value)}
+        required
+      />
+
+      <input
+        type="email"
+        placeholder="Email"
+        value={email}
+        onChange={(e) => setEmail(e.target.value)}
+        required
+      />
+
+      <input
+        type="password"
+        placeholder="Password"
+        value={password}
+        onChange={(e) => setPassword(e.target.value)}
+        required
+      />
+
+      <select value={role} onChange={(e) => setRole(e.target.value)}>
+        <option value="admin">Golf Pro</option>
+        <option value="instructor">Instructor</option>
+        <option value="student">Golf Shop Attendent</option>
+      </select>
+
+      <button type="submit">Sign Up</button>
+    </form>
   );
 }
-
-export default SignupFormPage;

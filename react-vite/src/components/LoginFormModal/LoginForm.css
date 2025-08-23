@@ -1,0 +1,87 @@
+
+/* Center the modal content */
+.login-card {
+    background-color: #ffffff;
+    padding: 40px 30px;
+    border-radius: 8px;
+    width: 400px;
+    max-width: 90%;
+    box-shadow: 0 4px 12px rgba(0, 0, 0, 0.15);
+    text-align: center;
+    display: flex;
+    flex-direction: column;
+    gap: 20px;
+  }
+  
+  /* Heading style */
+  .login-card h1 {
+    margin-bottom: 20px;
+    color: #0072ce;
+    font-size: 28px;
+    font-weight: bold;
+  }
+  
+  /* Form styling */
+  .login-card form {
+    display: flex;
+    flex-direction: column;
+    gap: 15px;
+    width: 100%;
+  }
+  
+  /* Labels */
+  .login-card label {
+    display: flex;
+    flex-direction: column;
+    font-weight: 600;
+    font-size: 14px;
+    text-align: left;
+  }
+  
+  /* Inputs */
+  .login-card input {
+    padding: 10px 12px;
+    border-radius: 6px;
+    border: 1px solid #ccc;
+    font-size: 16px;
+    margin-top: 5px;
+  }
+  
+  /* Button */
+  .login-card button {
+    padding: 12px;
+    border: none;
+    border-radius: 6px;
+    background-color: #0072ce;
+    color: white;
+    font-size: 16px;
+    font-weight: bold;
+    cursor: pointer;
+    margin-top: 10px;
+    transition: background-color 0.2s ease-in-out;
+  }
+  
+  .login-card button:hover {
+    background-color: #005bb5;
+  }
+  
+  /* Error messages */
+  .error-message {
+    color: red;
+    font-size: 12px;
+    margin: 0;
+  }
+  
+  /* Optional: for the modal background if you want it dimmed */
+  .modal-background {
+    position: fixed;
+    top: 0;
+    left: 0;
+    width: 100%;
+    height: 100%;
+    background-color: rgba(0, 0, 0, 0.5);
+    display: flex;
+    justify-content: center;
+    align-items: center;
+  }
+  

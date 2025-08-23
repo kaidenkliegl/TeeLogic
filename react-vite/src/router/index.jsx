@@ -8,13 +8,14 @@ import TeeTimeList from '../components/TeeTimes/teeTimeList';
 import Layout from './Layout';
 import PricingRules from '../components/Pricing/PricingList';
 
+
 export const router = createBrowserRouter([
   {
     element: <Layout />,
     children: [
       {
         path: "/",
-        element: <h1>Welcome!</h1>,
+        element: <LoginFormPage />,
       },
       {
         path: "login",
@@ -44,6 +45,7 @@ export const router = createBrowserRouter([
         path: "pricing/all",
         element:<PricingRules/>,
       },
+    
      
           
 

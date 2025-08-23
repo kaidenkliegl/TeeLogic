@@ -7,7 +7,7 @@ export default function CurrentWeather({ city }) {
   const apiKey = "eb6fd71c4a05488d84e14920240911"; 
 
   useEffect(() => {
-    fetch(`http://api.weatherapi.com/v1/current.json?key=${apiKey}&q=95403`)
+    fetch(`https://api.weatherapi.com/v1/current.json?key=${apiKey}&q=95403`)
       .then((res) => res.json())
       .then((data) => setWeather(data))
       .catch((err) => console.error(err));
