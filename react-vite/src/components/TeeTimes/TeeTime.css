@@ -166,3 +166,14 @@
   color: white;
   border: none;
 }
+.tee-sheet tbody tr.blocked-tee-time {
+  background-color: #cac6c6;
+  color: #666;
+  opacity: 0.8;
+}
+
+.tee-sheet tbody tr.blocked-tee-time:hover {
+  background-color: #cac6c6;
+  color: #666;
+  opacity: 0.8;
+}

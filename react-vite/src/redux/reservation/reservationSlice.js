@@ -54,7 +54,7 @@ const reservationSlice = createSlice({
       // Update
       .addCase(updateReservation.fulfilled, (state, action) => {
         const index = state.reservations.findIndex(
-          (r) => r.reservation.id === action.payload.id
+          (r) => r?.reservation?.id === action.payload.id
         );
         if (index !== -1) {
           state.reservations[index].reservation = action.payload;

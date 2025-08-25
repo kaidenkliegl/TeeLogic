@@ -1,16 +1,18 @@
 import { useState } from "react";
 import { useDispatch, useSelector } from "react-redux";
 import { thunkSignup } from "../../redux/session";
+import "./SignupForm.css"; 
 
 export default function SignupForm() {
   const dispatch = useDispatch();
-  const currentUser = useSelector((state) => state.session.user); // current logged-in user
+  const currentUser = useSelector((state) => state.session.user);
 
   const [username, setUsername] = useState("");
   const [email, setEmail] = useState("");
   const [password, setPassword] = useState("");
-  const [role, setRole] = useState("student");
+  const [role, setRole] = useState("instructor");
   const [errors, setErrors] = useState({});
+  const [successInfo, setSuccessInfo] = useState(null);
 
   const handleSubmit = async (e) => {
     e.preventDefault();
@@ -25,27 +27,32 @@ export default function SignupForm() {
       email,
       password,
       role,
-      course_id: currentUser.course_id, // automatically use current user's course
+      course_id: currentUser.course_id,
     };
 
-    const signupErrors = await dispatch(thunkSignup(newUser));
-    if (signupErrors) {
-      setErrors(signupErrors);
+    const result = await dispatch(thunkSignup(newUser));
+
+    if (result?.error) {
+      setErrors(result.error);
+      setSuccessInfo(null);
     } else {
-      // optionally show a success message or redirect
-      console.log("User signed up successfully!");
+      setSuccessInfo({ username, email, password });
+      setErrors({});
       setUsername("");
       setEmail("");
       setPassword("");
-      setRole("student");
+      setRole("instructor");
     }
   };
 
   return (
-    <form onSubmit={handleSubmit}>
+    <form className="signup-form" onSubmit={handleSubmit}>
       <h2>Sign Up</h2>
-      {errors.general && <p style={{ color: "red" }}>{errors.general}</p>}
-      
+
+      {errors.general && <p className="error">{errors.general}</p>}
+      {errors.username && <p className="error">{errors.username[0]}</p>}
+      {errors.email && <p className="error">{errors.email[0]}</p>}
+
       <input
         type="text"
         placeholder="Username"
@@ -71,12 +78,20 @@ export default function SignupForm() {
       />
 
       <select value={role} onChange={(e) => setRole(e.target.value)}>
-        <option value="admin">Golf Pro</option>
         <option value="instructor">Instructor</option>
-        <option value="student">Golf Shop Attendent</option>
+        <option value="Golf Shop Attendent">Golf Shop Attendent</option>
       </select>
 
       <button type="submit">Sign Up</button>
+
+      {successInfo && (
+        <div className="success-info">
+          <p>User created successfully! Please share this info with your staff to log in:</p>
+          <p><strong>Username:</strong> {successInfo.username}</p>
+          <p><strong>Email:</strong> {successInfo.email}</p>
+          <p><strong>Password:</strong> {successInfo.password}</p>
+        </div>
+      )}
     </form>
   );
 }

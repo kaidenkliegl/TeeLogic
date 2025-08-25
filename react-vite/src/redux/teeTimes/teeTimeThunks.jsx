@@ -77,3 +77,19 @@ export const deleteTeeTime = createAsyncThunk(
     }
   }
 );
+
+export const editTeeTimeStatus = ({ teeTimeId, status }) => async () => {
+  const res = await fetch(`/api/tee_time/${teeTimeId}/status`, {
+    method: "PUT",
+    headers: { "Content-Type": "application/json" },
+    body: JSON.stringify({ status }),
+  });
+
+  if (res.ok) {
+    const updatedTeeTime = await res.json();
+    return updatedTeeTime; // just return the updated data
+  } else {
+    const error = await res.json();
+    throw error;
+  }
+};

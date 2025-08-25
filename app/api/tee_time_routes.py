@@ -102,7 +102,6 @@ def edit_tee_time(tee_time_id):
     form = TeeTimeForm()
     form['csrf_token'].data = request.cookies.get('csrf_token')
     tee_time = TeeTime.query.get(tee_time_id)
-    tee_time = TeeTime.query.get(tee_time_id)
     if not tee_time:
         return jsonify({"error": "Tee time does not exist."}), 404
     if form.validate_on_submit():
@@ -135,17 +134,20 @@ def delete_tee_time(tee_time_id):
 
     return {"message": "Tee time deleted successfully", "tee_time": deleted_time}, 200
     
-@tee_time_routes.route("/block/<int:tee_time_id>", methods=["PATCH"])
+@tee_time_routes.route("/<int:tee_time_id>/status", methods=["PUT"])
 @login_required
-def block_tee_time(tee_time_id):
+def update_tee_time_status(tee_time_id):
     tee_time = TeeTime.query.get(tee_time_id)
+
     if not tee_time:
         return jsonify({"error": "Tee time does not exist."}), 404
 
-    try:
-        tee_time.status = "blocked"
-        db.session.commit()
-        return jsonify({"id": tee_time.id, "status": tee_time.status}), 200
-    except Exception as e:
-        db.session.rollback()
-        return jsonify({"error": str(e)}), 50
+    data = request.get_json()
+
+    if "status" not in data:
+        return jsonify({"error": "Status field is required."}), 400
+
+    tee_time.status = data["status"]
+    db.session.commit()
+
+    return tee_time.to_dict(), 200
