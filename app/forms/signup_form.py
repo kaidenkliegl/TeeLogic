@@ -25,9 +25,7 @@ class SignUpForm(FlaskForm):
     password = PasswordField('password', validators=[DataRequired()])
     role = SelectField(
         'role', 
-        choices=[('Golf Pro', 'golf pro'), ('instructor', 'Instructor'), ('Golf Shop Attendent', 'golf shop attendent')],
+        choices=[('golf Pro', 'Golf pro'), ('instructor', 'Instructor'), ('Golf Shop Attendent', 'golf shop attendent')],
         validators=[DataRequired()]
     )
-    course_id = IntegerField(
-        'course_id', validators=[DataRequired(), NumberRange(min=1, message="Invalid course ID")]
-    )
+

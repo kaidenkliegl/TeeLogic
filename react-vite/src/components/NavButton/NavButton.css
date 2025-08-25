@@ -37,7 +37,7 @@
   }
   
   .modal-nav-container ul li:hover {
-    background-color: grey;
+    background-color: rgb(232, 220, 220);
   }
   
   /* Open navigation button */

@@ -25,6 +25,7 @@
 }
 .login-card {
   background-color: #f3eded;
+  opacity: 0.87;
   padding: 40px 30px;
   border-radius: 5px;
   width: 500px;

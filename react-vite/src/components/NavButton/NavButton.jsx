@@ -12,6 +12,7 @@ export default function ModalNavButton() {
     "/golfer/new": "New Golfer",
     "/teetimes/all": "All Tee Times",
     "/pricing/all": "Pricing Rules",
+    "/settings": "Tee Settings"
   };
 
   const buttonLabel = routeLabels[location.pathname] || "TeeLogic";

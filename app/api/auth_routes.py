@@ -44,26 +44,25 @@ def logout():
 
 @auth_routes.route('/signup', methods=['POST'])
 def sign_up():
-    """
-    Creates a new user and logs them in
-    """
     form = SignUpForm()
     form['csrf_token'].data = request.cookies.get('csrf_token')
 
     if form.validate_on_submit():
+        # Assign course_id from the current user or fallback to default
+        course_id = getattr(current_user, 'course_id', 1)
+
         user = User(
             username=form.data['username'],
             email=form.data['email'],
-            password=form.data['password'],  
+            password=form.data['password'],
             role=form.data['role'],
-            course_id=form.data['course_id']
+            course_id=course_id
         )
         db.session.add(user)
         db.session.commit()
         return user.to_dict()
     
     return form.errors, 400
-
 
 
 

@@ -111,9 +111,13 @@ def update_reservation(reservation_id):
         return {"error": "Reservation not found"}, 404
 
     if form.validate_on_submit():
-        reservation.total_price = form.total_price.data
+        if form.golfer.data:
+            reservation.golfer = form.golfer.data
+        if form.total_price.data is not None:
+            reservation.total_price = form.total_price.data
 
         db.session.commit()
+        print(reservation.to_dict())
         return reservation.to_dict(), 200
 
     return {"error": "Invalid form submission"}, 400

@@ -60,20 +60,26 @@ export const deleteReservation = createAsyncThunk(
   }
 );
 
-// Update a reservation
 export const updateReservation = createAsyncThunk(
   "reservations/updateReservation",
-  async ({ reservationId, total_price }) => {
-    const res = await fetch(`/api/reservations/${reservationId}`, {
-      method: "PATCH",
-      headers: { "Content-Type": "application/json" },
-      body: JSON.stringify({ total_price }),
-    });
+  async ({ reservationId, data }, { rejectWithValue }) => {
+    try {
+      const res = await fetch(`/api/reservations/${reservationId}`, {
+        method: "PATCH",
+        headers: { "Content-Type": "application/json" },
+        body: JSON.stringify(data), 
+      });
 
-    if (!res.ok) {
-      const error = await res.json();
-      throw new Error(error.error || "Failed to update reservation");
+      const responseData = await res.json();
+
+      if (!res.ok) {
+        return rejectWithValue(responseData);
+      }
+
+      return responseData;
+    } catch (err) {
+      return rejectWithValue({ error: err.message });
     }
-    return await res.json();
   }
 );
+

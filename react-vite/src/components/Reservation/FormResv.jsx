@@ -24,8 +24,8 @@ function ReservationForm({ reservation }) {
     if (reservation) {
       setGolferName(reservation.golfer?.fullname || "");
       setTotalPrice(reservation.total_price || "");
-      setGolferNumber(reservation.phone_number || "");
-      setGolferEmail(reservation.email || "");
+      setGolferNumber(reservation.golfer?.phone_number || "");
+      setGolferEmail(reservation.golfer?.email || "");
       setSelectedPricing(reservation.pricing_rule_id || "");
     } else {
       clearForm();
@@ -60,10 +60,10 @@ function ReservationForm({ reservation }) {
 
     const payload = {
       golfer: golferName.trim(),
-      total_price: Number(totalPrice),
-      pricing_rule_id: selectedPricing || null,
       phone_number: golferNumber || null,
       email: golferEmail || null,
+      total_price: Number(totalPrice),
+      pricing_rule_id: selectedPricing || null,
     };
 
     if (reservation?.id) {
@@ -71,6 +71,7 @@ function ReservationForm({ reservation }) {
       await dispatch(
         updateReservation({ reservationId: reservation.id, data: payload })
       );
+      console.log(reservation.id);
     } else {
       // Create new reservation
       await dispatch(
@@ -83,16 +84,14 @@ function ReservationForm({ reservation }) {
       await dispatch(fetchReservations({ teeTimeId: currentTeeTime.id }));
     }
   };
+
   const handleDelete = async () => {
     if (reservation?.id) {
-      // Delete the reservation
       await dispatch(deleteReservation(reservation.id));
       if (currentTeeTime?.id) {
         await dispatch(fetchReservations({ teeTimeId: currentTeeTime.id }));
       }
     }
-
-    // Clear the form in either case
     clearForm();
   };
 
@@ -151,7 +150,7 @@ function ReservationForm({ reservation }) {
         </div>
 
         <div>
-          <label>Total Price:</label>
+          <label>Total Price: $</label>
           <input
             type="number"
             value={totalPrice}
