@@ -1,4 +1,5 @@
 import { createAsyncThunk } from "@reduxjs/toolkit";
+import { updateTeeTimeInStore } from "./teeTimeSlice";
 
 // Fetch tee times for a course on a given date
 export const fetchTeeTimes = createAsyncThunk(
@@ -78,18 +79,43 @@ export const deleteTeeTime = createAsyncThunk(
   }
 );
 
-export const editTeeTimeStatus = ({ teeTimeId, status }) => async () => {
-  const res = await fetch(`/api/tee_time/${teeTimeId}/status`, {
-    method: "PUT",
-    headers: { "Content-Type": "application/json" },
-    body: JSON.stringify({ status }),
-  });
 
-  if (res.ok) {
-    const updatedTeeTime = await res.json();
-    return updatedTeeTime; // just return the updated data
-  } else {
-    const error = await res.json();
-    throw error;
+export const editTeeTimeStatus = createAsyncThunk(
+  "teeTimes/editTeeTimeStatus",
+  async ({ teeTimeId, status }, { rejectWithValue }) => {
+    try {
+      const res = await fetch(`/api/tee_time/${teeTimeId}/status`, {
+        method: "PUT",
+        headers: { "Content-Type": "application/json" },
+        body: JSON.stringify({ status }),
+      });
+
+      if (!res.ok) {
+        const error = await res.json();
+        return rejectWithValue(error.error || "Failed to update tee time status");
+      }
+
+      return await res.json();
+    } catch (err) {
+      return rejectWithValue(err.message);
+    }
   }
-};
+);
+
+
+//fetch a single tee time by id
+export const fetchSingleTeeTime = createAsyncThunk(
+  "teeTimes/fetchSingleTeeTime",
+  async (teeTimeId, { rejectWithValue }) => {
+    try {
+      const res = await fetch(`/api/tee_time/${teeTimeId}`);
+      if (!res.ok) {
+        const error = await res.json();
+        return rejectWithValue(error.error || "Failed to fetch tee time");
+      }
+      return await res.json();
+    } catch (err) {
+      return rejectWithValue(err.message);
+    }
+  }
+);

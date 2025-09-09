@@ -21,8 +21,6 @@ def create_or_update_note(tee_time_id):
     data = request.get_json()
     content = data.get("content", "").strip()
 
-    if not content:
-        return jsonify({"error": "Content cannot be empty"}), 400
 
     # Check if note already exists for this tee time
     note = Note.query.filter_by(tee_time_id=tee_time_id).first()

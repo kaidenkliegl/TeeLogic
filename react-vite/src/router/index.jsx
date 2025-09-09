@@ -1,4 +1,4 @@
-import { createBrowserRouter } from 'react-router-dom';
+import { createBrowserRouter, Navigate } from 'react-router-dom';
 import LoginFormPage from '../components/LoginFormPage';
 import SignupFormPage from '../components/SignupFormPage';
 import GolferDetail from '../components/Golfers/GolferDetail';
@@ -8,11 +8,15 @@ import TeeTimeList from '../components/TeeTimes/teeTimeList';
 import Layout from './Layout';
 import PricingRules from '../components/Pricing/PricingList';
 
-
 export const router = createBrowserRouter([
   {
     element: <Layout />,
     children: [
+      // Default route: redirect "/" to login
+      {
+        path: "/",
+        element: <Navigate to="/login" replace />,
+      },
       {
         path: "login",
         element: <LoginFormPage />,
@@ -22,29 +26,25 @@ export const router = createBrowserRouter([
         element: <SignupFormPage />,
       },
       {
-      path: "golfers/:golferId",
-      element:<GolferDetail/>
+        path: "golfers/:golferId",
+        element: <GolferDetail />,
       },
       {
         path: "golfer/all",
-        element:<GolferList/>,
-        },
+        element: <GolferList />,
+      },
       {
         path: "golfer/new",
-        element:<GolferForm/>,
-        },
+        element: <GolferForm />,
+      },
       {
         path: "teetimes/all",
-        element:<TeeTimeList/>,
+        element: <TeeTimeList />,
       },
       {
         path: "pricing/all",
-        element:<PricingRules/>,
+        element: <PricingRules />,
       },
-    
-     
-          
-
     ],
   },
 ]);
