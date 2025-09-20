@@ -8,6 +8,7 @@ import { useModal } from "../../context/Modal";
 import ReservationModal from "../ReservationModal/reservationModal";
 import DatePicker from "../Calender/Calender";
 import UserNote from "../UserNote/UserNote";
+import Spinner from "../Spinner/Spinner";
 import "./TeeTime.css";
 import moneyBtn from "../../../public/dollar-symbol.png";
 import checkMark from "../../../public/check-mark.png";
@@ -42,6 +43,15 @@ export default function TeeTimeList() {
     });
     setPlayersByTeeTime(updatedPlayers);
   }, [teeTimes]);
+
+  useEffect(() => {
+    if (status === "idle") {
+      dispatch(fetchTeeTimes());
+    }
+  }, [status, dispatch]);
+
+  if (status === "loading") return <Spinner />;
+  if (status === "failed") return <p>Error: {error}</p>;
 
   // Open reservation modal
   const openReservationModal = (teeTime) => {
