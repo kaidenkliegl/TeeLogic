@@ -1,5 +1,4 @@
 import { createAsyncThunk } from "@reduxjs/toolkit";
-import { updateTeeTimeInStore } from "./teeTimeSlice";
 
 // Fetch tee times for a course on a given date
 export const fetchTeeTimes = createAsyncThunk(
