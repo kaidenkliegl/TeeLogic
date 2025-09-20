@@ -1,0 +1,19 @@
+.spinner {
+    border: 4px solid rgba(0, 0, 0, 0.1);  /* Light gray background */
+    border-top: 4px solid #333;           /* Dark gray top for the spinning effect */
+    border-radius: 50%;                    /* Makes it a circle */
+    width: 40px;                           /* Diameter */
+    height: 40px;
+    animation: spin 1s linear infinite;    /* Rotate continuously */
+    margin: 20px auto;                     /* Center horizontally */
+    display: block;
+  }
+  
+  @keyframes spin {
+    0% {
+      transform: rotate(0deg);
+    }
+    100% {
+      transform: rotate(360deg);
+    }
+  }
