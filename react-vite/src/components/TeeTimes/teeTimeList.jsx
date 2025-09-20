@@ -44,14 +44,6 @@ export default function TeeTimeList() {
     setPlayersByTeeTime(updatedPlayers);
   }, [teeTimes]);
 
-  useEffect(() => {
-    if (status === "idle") {
-      dispatch(fetchTeeTimes());
-    }
-  }, [status, dispatch]);
-
-  if (status === "loading") return <Spinner />;
-  if (status === "failed") return <p>Error: {error}</p>;
 
   // Open reservation modal
   const openReservationModal = (teeTime) => {
@@ -84,9 +76,14 @@ export default function TeeTimeList() {
       );
   };
 
-  if (status === "loading") return <p>Loading tee times...</p>;
+  useEffect(() => {
+    if (status === "idle") {
+      dispatch(fetchTeeTimes());
+    }
+  }, [status, dispatch]);
+
+  if (status === "loading") return <Spinner />;
   if (status === "failed") return <p>Error: {error}</p>;
-  if (!teeTimes || teeTimes.length === 0) return <p>No tee times found.</p>;
 
   return (
     <div className="tee-time-layout">
