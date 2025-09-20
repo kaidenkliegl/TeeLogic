@@ -9,11 +9,11 @@ import {
 import { fetchPricingRules } from "../../redux/pricing/pricingThunks";
 import "./Form.css";
 
-function ReservationForm({ reservation }) {
+function ReservationForm({ reservation, pricingRulesTitle }) {
   const dispatch = useDispatch();
   const currentTeeTime = useSelector((state) => state.teetimes.current);
   const pricingRules = useSelector((state) => state.pricing.pricingRules) || [];
-
+console.log(pricingRulesTitle)
   const [golferName, setGolferName] = useState("");
   const [totalPrice, setTotalPrice] = useState("");
   const [golferNumber, setGolferNumber] = useState("");
@@ -140,7 +140,13 @@ function ReservationForm({ reservation }) {
             value={selectedPricing}
             onChange={(e) => setSelectedPricing(e.target.value)}
           >
-            <option value="">-- Select Pricing --</option>
+            {pricingRulesTitle ? (
+              // Show saved rule first
+              <option value="">{pricingRulesTitle}</option>
+            ) : (
+              // Default placeholder
+              <option value="">-- Select Pricing --</option>
+            )}
             {pricingRules.map((rule) => (
               <option key={rule.id} value={rule.id}>
                 {rule.title} - {rule.day_of_week} (${rule.rate})

@@ -4,6 +4,7 @@ import ReservationForm from "../Reservation/formResv";
 import { useSelector, useDispatch } from "react-redux";
 import { useEffect } from "react";
 import { fetchReservations } from "../../redux/reservation/reservationsThunks";
+import { fetchSingleTeeTime } from "../../redux/teeTimes/teeTimeThunks";
 import TeeTimeNote from "../Notes/TeeTimeNote";
 import "./ReservationModal.css";
 
@@ -11,7 +12,8 @@ export default function ReservationModal({ teeTimeId, onReservationChange }) {
   const { closeModal } = useModal();
   const dispatch = useDispatch();
   const { reservations } = useSelector((state) => state.reservations);
-
+  const pricingRules = useSelector((state) => state.pricing.pricingRules) || [];
+ console.log(pricingRules)
   // Fetch reservations for this tee time
   useEffect(() => {
     if (teeTimeId) {
@@ -24,10 +26,18 @@ export default function ReservationModal({ teeTimeId, onReservationChange }) {
   // Make array of 4 spots for forms
   const spots = Array.from({ length: 4 });
 
-  const handleClose = () => {
-    if (onReservationChange) onReservationChange();
-    closeModal();
-  };
+const handleClose = async () => {
+  if (onReservationChange) {
+    try {
+      const updatedTeeTime = await dispatch(fetchSingleTeeTime(teeTimeId)).unwrap();
+      onReservationChange(updatedTeeTime);
+    } catch (err) {
+      console.error("Failed to refresh tee time:", err);
+    }
+  }
+  closeModal();
+};
+
 
   return (
     <div className="reservation-modal-container">
@@ -39,6 +49,11 @@ export default function ReservationModal({ teeTimeId, onReservationChange }) {
               <ReservationForm
                 key={index}
                 reservation={reservation}
+                pricingRulesTitle={
+                  reservation
+                    ? pricingRules.find((r) => r.id === reservation.pricing_rule_id)?.title
+                    : null
+                }
                 teeTimeId={teeTimeId}
                 onClose={handleClose} // pass down callback
               />
@@ -51,7 +66,7 @@ export default function ReservationModal({ teeTimeId, onReservationChange }) {
         <div className="modal-buttons">
           <button
             className="reservation-modal-close-btn bottom"
-            onClick={handleClose} // <-- fixed
+            onClick={handleClose} 
           >
             Close
           </button>

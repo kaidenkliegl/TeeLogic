@@ -1,14 +1,13 @@
 import { useDispatch, useSelector } from "react-redux";
 import { useEffect, useState } from "react";
 import CurrentWeather from "../Weather/Weather";
-import { editTeeTimeStatus } from "../../redux/teeTimes/teeTimeThunks";
-import DatePicker from "../Calender/Calender";
-import UserNote from "../UserNote/UserNote";
-import { fetchTeeTimes, deleteTeeTime } from "../../redux/teeTimes/teeTimeThunks";
-import { setCurrentTeeTime } from "../../redux/teeTimes/teeTimeSlice";
+import { editTeeTimeStatus, deleteTeeTime, fetchTeeTimes } from "../../redux/teeTimes/teeTimeThunks";
+import { setCurrentTeeTime, updateTeeTimeInStore } from "../../redux/teeTimes/teeTimeSlice";
 import { nextDay, prevDay, setDate } from "../../redux/calender/dateSlice";
 import { useModal } from "../../context/Modal";
 import ReservationModal from "../ReservationModal/reservationModal";
+import DatePicker from "../Calender/Calender";
+import UserNote from "../UserNote/UserNote";
 import "./TeeTime.css";
 import moneyBtn from "../../../public/dollar-symbol.png";
 import checkMark from "../../../public/check-mark.png";
@@ -25,7 +24,7 @@ export default function TeeTimeList() {
   const [playersByTeeTime, setPlayersByTeeTime] = useState({});
   const [activeButtons, setActiveButtons] = useState({});
 
-  // Fetch tee times
+  // Fetch tee times on mount or date change
   useEffect(() => {
     if (courseId && selectedDate) {
       const formattedDate = new Date(selectedDate).toISOString().split("T")[0];
@@ -33,7 +32,7 @@ export default function TeeTimeList() {
     }
   }, [courseId, selectedDate, dispatch]);
 
-  // Update players list
+  // Map players for each tee time
   useEffect(() => {
     const updatedPlayers = {};
     teeTimes.forEach((tt) => {
@@ -44,6 +43,7 @@ export default function TeeTimeList() {
     setPlayersByTeeTime(updatedPlayers);
   }, [teeTimes]);
 
+  // Open reservation modal
   const openReservationModal = (teeTime) => {
     if (teeTime.status === "blocked") return;
 
@@ -51,25 +51,23 @@ export default function TeeTimeList() {
     setModalContent(
       <ReservationModal
         teeTimeId={teeTime.id}
-        onReservationChange={() => {
-          const formattedDate = new Date(selectedDate)
-            .toISOString()
-            .split("T")[0];
-          dispatch(fetchTeeTimes({ courseId, date: formattedDate }));
+        onReservationChange={(updatedTeeTime) => {
+          dispatch(updateTeeTimeInStore(updatedTeeTime));
         }}
       />
     );
   };
 
+  // Toggle blocked/available status
   const handleToggleStatus = (teeTime) => {
     const newStatus = teeTime.status === "blocked" ? "available" : "blocked";
 
     dispatch(editTeeTimeStatus({ teeTimeId: teeTime.id, status: newStatus }))
-      .then(() => {
-        const formattedDate = new Date(selectedDate)
-          .toISOString()
-          .split("T")[0];
-        dispatch(fetchTeeTimes({ courseId, date: formattedDate }));
+      .then((res) => {
+        if (res.meta.requestStatus === "fulfilled") {
+          // Update only this tee time in store
+          dispatch(updateTeeTimeInStore(res.payload));
+        }
       })
       .catch((err) =>
         console.error(`Failed to update tee time status to ${newStatus}`, err)
@@ -90,15 +88,12 @@ export default function TeeTimeList() {
       <div className="tee-time-main">
         <div className="tee-time-headers">
           <div className="current-date-nav">
-            <button
-              className="todays-btn"
-              onClick={() => dispatch(setDate(new Date()))}
-            >
+            <button className="todays-btn" onClick={() => dispatch(setDate(new Date()))}>
               Today
             </button>
           </div>
           <div className="date-nav">
-            <h1>{new Date(selectedDate).toLocaleDateString()}</h1>{" "}
+            <h1>{new Date(selectedDate).toLocaleDateString()}</h1>
             <button onClick={() => dispatch(prevDay())}>&lt;</button>
             <button onClick={() => dispatch(nextDay())}>&gt;</button>
           </div>
@@ -113,7 +108,6 @@ export default function TeeTimeList() {
                 ...players,
                 ...Array(tt.max_players - players.length).fill(""),
               ];
-
               const rowClass = tt.status === "blocked" ? "blocked-tee-time" : "";
 
               return (
@@ -139,9 +133,7 @@ export default function TeeTimeList() {
                       <td key={index}>
                         {p}
                         <button
-                          className={`status-btn ${
-                            activeButtons[moneyKey] ? "active" : ""
-                          }`}
+                          className={`status-btn ${activeButtons[moneyKey] ? "active" : ""}`}
                           onClick={() =>
                             tt.status !== "blocked" &&
                             setActiveButtons((prev) => ({
@@ -151,17 +143,11 @@ export default function TeeTimeList() {
                           }
                           disabled={tt.status === "blocked"}
                         >
-                          <img
-                            src={moneyBtn}
-                            alt="money icon"
-                            className="status-icon"
-                          />
+                          <img src={moneyBtn} alt="money icon" className="status-icon" />
                         </button>
 
                         <button
-                          className={`status-btn ${
-                            activeButtons[checkKey] ? "active" : ""
-                          }`}
+                          className={`status-btn ${activeButtons[checkKey] ? "active" : ""}`}
                           onClick={() =>
                             tt.status !== "blocked" &&
                             setActiveButtons((prev) => ({
@@ -171,11 +157,7 @@ export default function TeeTimeList() {
                           }
                           disabled={tt.status === "blocked"}
                         >
-                          <img
-                            src={checkMark}
-                            alt="check icon"
-                            className="status-icon"
-                          />
+                          <img src={checkMark} alt="check icon" className="status-icon" />
                         </button>
                       </td>
                     );
@@ -186,10 +168,9 @@ export default function TeeTimeList() {
                       className="delete-btn"
                       onClick={() => {
                         if (tt.status === "blocked") return;
-                        const confirmDelete = window.confirm(
-                          "Are you sure you want to delete this tee time?"
-                        );
-                        if (confirmDelete) dispatch(deleteTeeTime(tt.id));
+                        if (window.confirm("Are you sure you want to delete this tee time?")) {
+                          dispatch(deleteTeeTime(tt.id));
+                        }
                       }}
                       disabled={tt.status === "blocked"}
                     >
@@ -197,9 +178,7 @@ export default function TeeTimeList() {
                     </button>
 
                     <button
-                      className={`block-btn ${
-                        tt.status === "blocked" ? "available" : "blocked"
-                      }`}
+                      className={`block-btn ${tt.status === "blocked" ? "available" : "blocked"}`}
                       onClick={() => handleToggleStatus(tt)}
                     >
                       {tt.status === "blocked" ? "Unblock" : "Block"}

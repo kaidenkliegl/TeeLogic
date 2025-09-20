@@ -16,7 +16,7 @@ export const fetchNote = createAsyncThunk(
 export const saveNote = createAsyncThunk(
   "note/saveNote",
   async ({ teeTimeId, content }, { rejectWithValue }) => {
-    const res = await fetch(`/api/notes/${teeTimeId}`, {
+    const res = await fetch(`/api/notes/tee-time/${teeTimeId}`, {
       method: "POST",
       headers: { "Content-Type": "application/json" },
       body: JSON.stringify({ content }),
@@ -27,3 +27,4 @@ export const saveNote = createAsyncThunk(
     return await res.json();
   }
 );
+

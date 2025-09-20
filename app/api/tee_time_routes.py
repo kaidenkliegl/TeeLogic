@@ -8,6 +8,7 @@ from app.forms import TeeTimeForm
 
 tee_time_routes = Blueprint("tee_time", __name__)
 
+#get all tee times for a given day 
 @tee_time_routes.route("/", methods=['GET'])  
 @login_required
 def get_tee_times():
@@ -151,3 +152,12 @@ def update_tee_time_status(tee_time_id):
     db.session.commit()
 
     return tee_time.to_dict(), 200
+
+#get a single tee time by an id 
+@tee_time_routes.route("/<int:tee_time_id>", methods=["GET"])
+@login_required
+def get_single_tee_time(tee_time_id):
+    tee_time = TeeTime.query.get(tee_time_id)
+    if not tee_time:
+        return jsonify({"error": "Tee time not found"}), 404
+    return jsonify(tee_time.to_dict()), 200

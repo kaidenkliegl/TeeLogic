@@ -17,6 +17,17 @@ const teeTimeSlice = createSlice({
     clearCurrentTeeTime: (state) => {
       state.current = null;
     },
+    // Update a single tee time in the array without refetching all
+    updateTeeTimeInStore: (state, action) => {
+      const updatedTeeTime = action.payload;
+      const index = state.teeTimes.findIndex(t => t.id === updatedTeeTime.id);
+      if (index !== -1) {
+        state.teeTimes[index] = updatedTeeTime;
+      }
+      if (state.current && state.current.id === updatedTeeTime.id) {
+        state.current = updatedTeeTime;
+      }
+    }
   },
   extraReducers: (builder) => {
     builder
@@ -57,7 +68,9 @@ const teeTimeSlice = createSlice({
         if (index !== -1) {
           state.teeTimes[index] = updated;
         }
-        state.current = updated; // update current if it’s the one being viewed
+        if (state.current && state.current.id === updated.id) {
+          state.current = updated; // update current if it’s the one being viewed
+        }
       })
       .addCase(editTeeTime.rejected, (state, action) => {
         state.status = "failed";
@@ -80,5 +93,5 @@ const teeTimeSlice = createSlice({
   },
 });
 
-export const { setCurrentTeeTime, clearCurrentTeeTime } = teeTimeSlice.actions;
+export const { setCurrentTeeTime, clearCurrentTeeTime, updateTeeTimeInStore } = teeTimeSlice.actions;
 export default teeTimeSlice.reducer;

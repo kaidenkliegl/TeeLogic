@@ -7,7 +7,11 @@ class TeeTime(db.Model):
     __tablename__ = 'tee_times'
 
     if environment == "production":
-        __table_args__ = {'schema': SCHEMA}
+        __table_args__ = (
+            UniqueConstraint('course_id', 'start_time', name='uq_course_start_time'),
+            Index('idx_course_start_time', 'course_id', 'start_time'),
+            {'schema': SCHEMA}
+        )
 
     id = db.Column(db.Integer, primary_key=True)
     start_time = db.Column(db.DateTime, nullable=False)
@@ -17,7 +21,7 @@ class TeeTime(db.Model):
     available_spots = db.Column(db.Integer, nullable=False, default=4)
 
 
-    # New status field with 4 possible values
+    # status field with 4 possible values
     status = db.Column(
         db.Enum('available', 'blocked', 'split', 'event', name='tee_time_status'),
         nullable=False,
