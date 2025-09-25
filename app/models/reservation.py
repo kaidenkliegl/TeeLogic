@@ -23,6 +23,7 @@ class Reservation(db.Model):
             'id': self.id,
             'tee_time_id': self.tee_time_id,
             'golfer': self.golfer.to_dict(),  
+            'teeTimeStart': self.tee_time.start_time.isoformat() if self.tee_time else None,
             'total_price': float(self.total_price),
             'created_at': self.created_at.isoformat(),
             'status': self.status

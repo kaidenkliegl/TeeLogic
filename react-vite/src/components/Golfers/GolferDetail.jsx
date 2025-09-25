@@ -79,7 +79,8 @@ export default function GolferDetail({ golferId, onDelete }) {
         <div className="reservations-list">
           {reservations.map((r) => (
             <div key={r.id} className="reservation-card">
-              <p><strong>Booking time:</strong> {formatDate(r.created_at)}</p>
+              <p><strong> Reservation created on:</strong> {formatDate(r.created_at)}</p>
+              <p><strong>Tee Time:</strong> {formatDate(r.teeTimeStart)}</p>
               <p><strong>Price:</strong> ${r.total_price.toFixed(2)}</p>
               <p><strong>Status:</strong> {r.status}</p>
             </div>

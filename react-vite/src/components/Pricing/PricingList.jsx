@@ -6,7 +6,7 @@ import {
   deletePricingRule,
 } from "../../redux/pricing/pricingThunks";
 import PricingRuleForm from "./PricingForm";
-import "./PricingList.css"; 
+import "./PricingList.css";
 
 export default function PricingDropdown() {
   const dispatch = useDispatch();
@@ -25,7 +25,8 @@ export default function PricingDropdown() {
 
   const filteredRules = pricingRules.filter((p) => {
     const dayMatch = selectedDay === "All" || p.day_of_week === selectedDay;
-    const userTypeMatch = selectedUserType === "All" || p.user_type === selectedUserType;
+    const userTypeMatch =
+      selectedUserType === "All" || p.user_type === selectedUserType;
     return dayMatch && userTypeMatch;
   });
 
@@ -41,43 +42,68 @@ export default function PricingDropdown() {
 
   return (
     <>
+      <h2 className="pricing-header">Add Pricing Rule</h2>
       <div className="pricing-dropdown-container">
-        <PricingRuleForm onSuccess={() => dispatch(fetchPricingRules())} />
-
-        <div className="pricing-filters">
-          <label htmlFor="day-select">Filter by Day:</label>
-          <select id="day-select" value={selectedDay} onChange={(e) => setSelectedDay(e.target.value)}>
-            {days.map((day) => <option key={day} value={day}>{day}</option>)}
-          </select>
-
-          <label htmlFor="user-type-select">Filter by User Type:</label>
-          <select id="user-type-select" value={selectedUserType} onChange={(e) => setSelectedUserType(e.target.value)}>
-            {userTypes.map((type) => <option key={type} value={type}>{type}</option>)}
-          </select>
+        <div className="pricing-form-container">
+          <PricingRuleForm onSuccess={() => dispatch(fetchPricingRules())} />
         </div>
+        <div className="divider"></div>
+        <div className="pricing-list-container">
+          <div className="pricing-filters">
+            <label htmlFor="day-select">Filter by Day:</label>
+            <select
+              id="day-select"
+              value={selectedDay}
+              onChange={(e) => setSelectedDay(e.target.value)}
+            >
+              {days.map((day) => (
+                <option key={day} value={day}>
+                  {day}
+                </option>
+              ))}
+            </select>
 
-        <div className="pricing-rules-list">
-          {filteredRules.map((rule) => (
-            <div key={rule.id} className="pricing-rule-item">
-              <button
-                className="pricing-rule-button"
-                onClick={() => openEditModal(rule)}
-              >
-                {rule.title} - {rule.day_of_week} - {rule.time_range} - $
-                {rule.rate} - {rule.user_type}
-              </button>
-              <button
-                className="delete-rule-btn"
-                onClick={() => {
-                  if (window.confirm("Are you sure you want to delete this pricing rule?")) {
-                    dispatch(deletePricingRule(rule.id));
-                  }
-                }}
-              >
-                Delete
-              </button>
-            </div>
-          ))}
+            <label htmlFor="user-type-select">Filter by User Type:</label>
+            <select
+              id="user-type-select"
+              value={selectedUserType}
+              onChange={(e) => setSelectedUserType(e.target.value)}
+            >
+              {userTypes.map((type) => (
+                <option key={type} value={type}>
+                  {type}
+                </option>
+              ))}
+            </select>
+          </div>
+
+          <div className="pricing-rules-list">
+            {filteredRules.map((rule) => (
+              <div key={rule.id} className="pricing-rule-item">
+                <button
+                  className="pricing-rule-button"
+                  onClick={() => openEditModal(rule)}
+                >
+                  {rule.title} - {rule.day_of_week} - {rule.time_range} - $
+                  {rule.rate} - {rule.user_type}
+                </button>
+                <button
+                  className="delete-rule-btn"
+                  onClick={() => {
+                    if (
+                      window.confirm(
+                        "Are you sure you want to delete this pricing rule?"
+                      )
+                    ) {
+                      dispatch(deletePricingRule(rule.id));
+                    }
+                  }}
+                >
+                  Delete
+                </button>
+              </div>
+            ))}
+          </div>
         </div>
       </div>
     </>

@@ -1,70 +1,109 @@
-.pricing-dropdown-container{
-    width: 50%;
+
+.pricing-header {
+  margin: 20px;
+  font-weight: 200;
+  font-size: 30px;
+  border-bottom: 1px solid;
+  padding-bottom: 20px;
 }
-.pricing-rule-header{
-    margin: 20px;
-    font-weight: 200;
-    font-size: 20px;
-}
+
 
 .pricing-dropdown-container {
-    display: flex;
-    flex-direction: column;
-    gap: 15px;
-  }
-  
-  .pricing-filters {
-    display: flex;
-    align-items: center;
-    gap: 10px;
-  }
-  
-  .pricing-filters label {
-    font-weight: bold;
-  }
-  
-  .pricing-filters select {
-    padding: 5px;
-  }
-  
-  .pricing-rules-list {
-    display: flex;
-    flex-direction: column;
-    flex-wrap: wrap;
-    gap: 15px;
-  }
-  
-  .pricing-rule-button {
-    padding: 10px 15px;
-    border-radius: 3px;
-    border: 1px solid #333;
-    cursor: pointer;
-    background-color: #EAEFF2;
+  display: flex;
+  width: 100%;
+  align-items: stretch;
+  gap: 20px;
+  margin: 20px 0;
+}
+.divider {
+  width: 1px;
+  background-color: #0c0c0c;
+  align-self: stretch; 
+}
+/* Left side: form takes up 1/3 */
+.pricing-form-container {
+  flex: 1; /* 1/3 of total width */
+  display: flex;
+  justify-content: flex-start;
+}
 
-  }
-  .delete-rule-btn {
-    padding: 8px 14px;              
-    border-radius: 6px;             
-    cursor: pointer;
-    background-color: #f96769;     
-    color: white;                
-    font-weight: 500;              
-    border: 1px solid #d93638;     
-    transition: all 0.2s ease;    
+
+.pricing-list-container {
+  flex: 2; /* 2/3 of total width */
+  display: flex;
+  flex-direction: column;
+  margin: 20px;
+  gap: 20px;
+}
+
+.pricing-filters {
+  display: flex;
+  margin-right: 60px;
+  align-items: center;
+  gap: 15px;
+}
+
+.pricing-filters label {
+  font-weight: bold;
+}
+
+.pricing-filters select {
+  padding: 5px;
+  border-radius: 4px;
+  border: 1px solid #ccc;
+  min-width: 150px;
+}
+
+/* Rules list */
+.pricing-rules-list {
+  display: flex;
+  flex-direction: column;
+  gap: 15px;
+  width: 100%;
+}
+
+/* Each rule item row */
+.pricing-rule-item {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  gap: 10px;
+}
+
+/* Rule edit button */
+.pricing-rule-button {
+  flex: 1;
+  padding: 10px 15px;
+  border-radius: 3px;
+  border: 1px solid #333;
+  cursor: pointer;
+  background-color: #fafafa;
+  transition: all 0.2s ease;
+  text-align: left;
+}
+
+.pricing-rule-button:hover {
+  background-color: #e0f0ff;
+}
+
+/* Delete button */
+.delete-rule-btn {
+  padding: 8px 14px;
+  border-radius: 6px;
+  cursor: pointer;
+  background-color: #e98a8e;
+  color: white;
+  font-weight: 500;
+  border: 1px solid #fdc4c5;
+  transition: all 0.2s ease;
 }
 
 .delete-rule-btn:hover {
-    background-color: #f39193;     
-    border-color: #b52b2f;         
-    box-shadow: 0px 2px 6px rgba(0,0,0,0.15); 
+  background-color: #ef6a6c;
+  border-color: #b52b2f;
+  box-shadow: 0px 2px 6px rgba(0, 0, 0, 0.15);
 }
 
 .delete-rule-btn:active {
-    transform: scale(0.97);        
+  transform: scale(0.97);
 }
-
-  
-  .pricing-rule-button:hover {
-    background-color: #e0f0ff;
-  }
-  

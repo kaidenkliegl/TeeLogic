@@ -56,7 +56,6 @@ export default function PricingRuleForm({ onSuccess, ruleToEdit = null, closeMod
 
   return (
     <form onSubmit={handleSubmit} className="pricing-rule-form">
-      <h2>{ruleToEdit ? "Edit Pricing Rule" : "Add Pricing Rule"}</h2>
 
       <div className="pricing-input">
         <label>Title:</label>

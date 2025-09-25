@@ -1,15 +1,22 @@
+.pricing-dropdown-container,
+.pricing-dropdown-container * {
+  font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+}
+
 .pricing-rule-form {
     max-width: 600px;
     margin: 20px 20px;
     padding: 0;
-    display: grid;
-    grid-template-columns: repeat(2, 1fr); 
-    gap: 20px; 
+    display: flex;
+    flex-direction: column;
+    row-gap: 40px;
     font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
   }
   
   .pricing-input {
     display: flex;
+    width: 20vw;
+    font-size: 18px;
     flex-direction: column;
   }
   

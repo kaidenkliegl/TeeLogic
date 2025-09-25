@@ -83,7 +83,6 @@ export default function TeeTimeList() {
   }, [status, dispatch]);
 
   if (status === "loading") return <Spinner />;
-  if (status === "failed") return <p>Error: {error}</p>;
 
   return (
     <div className="tee-time-layout">
